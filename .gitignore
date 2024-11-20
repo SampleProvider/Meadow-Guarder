@@ -1,0 +1,7 @@
+node_modules
+
+server/backups
+server/logs
+server/debug
+
+database.db

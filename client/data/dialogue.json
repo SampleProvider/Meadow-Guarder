@@ -1,0 +1,20 @@
+[
+    {
+        "id": "bob1",
+        "dialogue": [
+            {
+                "text": "ooof",
+                "options": [
+                    {
+                        "text": "oooooooooof",
+                        "action": "continue"
+                    },
+                    {
+                        "text": "test",
+                        "action": "dialogue_bob2"
+                    }
+                ]
+            }
+        ]
+    }
+]

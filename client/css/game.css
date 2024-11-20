@@ -1,0 +1,565 @@
+/*
+add box sizing border box
+*/
+
+#canvas, #canvasShade, .canvasFlash {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+}
+#canvas {
+    cursor: var(--cursor);
+    pointer-events: auto;
+}
+#canvasShade {
+    opacity: 1;
+}
+
+/*
+z-index:
+
+
+1: canvas shade
+2: 
+*/
+
+#stats {
+    position: absolute;
+    left: -1px;
+    top: -1px;
+    padding-top: calc(var(--stats-size) * 5px);
+    /* width: calc(var(--stats-size) * 160px);
+    height: calc(var(--stats-size) * 80px); */
+}
+.statsBar {
+    position: relative;
+    margin: calc(var(--stats-size) * 5px);
+    margin-top: 0px;
+    width: calc(var(--stats-size) * 150px);
+    height: calc(var(--stats-size) * 20px);
+    border: var(--border-dark);
+    background-color: #000000;
+}
+.statsValue {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: calc(var(--stats-size) * 20px);
+    transition: width 250ms ease-out;
+}
+.statsText {
+    position: absolute;
+    left: 0px;
+    top: calc(var(--stats-size) * -1.5px);
+    width: calc(var(--stats-size) * 150px);
+    height: calc(var(--stats-size) * 20px);
+    font-size: calc(var(--stats-size) * 16px);
+    text-align: center;
+}
+#chat {
+    position: absolute;
+    right: 0px;
+    bottom: calc(var(--chat-font-size) + 4px);
+    padding: calc(var(--chat-font-size) / 4);
+    width: calc(var(--chat-size) * 30vw);
+    height: calc(var(--chat-size) * 140px);
+    border: var(--border-dark);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    overflow-wrap: break-word;
+    cursor: var(--cursor);
+}
+.chatText {
+    color: #000000;
+    font-size: var(--chat-font-size);
+}
+#chatInput {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    padding: 0px calc(var(--chat-font-size) / 4);
+    width: calc(var(--chat-size) * 30vw);
+    height: calc(var(--chat-font-size) + 4px);
+    border: var(--border-dark);
+    font-size: var(--chat-font-size);
+}
+
+#regionDisplayContainer {
+    opacity: 0;
+}
+#regionDisplay {
+    position: absolute;
+    left: 50vw;
+    top: 15vh;
+    width: 40vw;
+    padding: 1vw 2vw;
+    text-align: center;
+    background-color: #725640;
+    border: 2px solid #000000;
+    /* outline: 0px; */
+    transform: translateX(-50%);
+}
+
+#respawnContainer {
+    background-color: #ff000055;
+}
+#respawnText {
+    position: absolute;
+    left: 50vw;
+    top: 28vh;
+    padding-left: 1vh;
+    font-size: 8vh;
+    text-align: center;
+    transform: translateX(-50%);
+}
+#respawnCooldown {
+    position: absolute;
+    left: 50vw;
+    top: 41vh;
+    padding-left: 0.5vh;
+    font-size: 6vh;
+    text-align: center;
+    transform: translateX(-50%);
+}
+#respawnButton {
+    position: absolute;
+    top: 50vh;
+    left: 50vw;
+    padding: 0vh 1vh;
+    padding-bottom: 0.25vh;
+    font-size: 3vh;
+    opacity: 0.75;
+    cursor: pointer;
+    background-color: #555555;
+    border: 0.5vh outset #999999;
+    transform: translateX(-50%);
+    transition: opacity 100ms linear;
+}
+#respawnButton:hover {
+    opacity: 1;
+}
+#respawnButton:active {
+    opacity: 1;
+    border: 0.5vh inset #999999;
+}
+#respawnButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#respawnButton:disabled:hover {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#respawnButton:disabled:active {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border: 0.5vh outset #999999;
+}
+
+#window {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 300px;
+    height: 300px;
+    min-width: 300px;
+    min-height: 26px;
+    max-height: 100vh;
+    resize: vertical;
+    overflow: hidden;
+    transition: max-height 200ms ease-in-out;
+}
+#windowBar {
+    padding-left: 6px;
+    padding-top: 2px;
+    height: 24px;
+    border-bottom: var(--border-dark);
+    background-color: var(--color-medium-dark);
+    cursor: move;
+}
+#windowClose {
+    position: absolute;
+    display: inline-block;
+    right: 3px;
+    top: 3px;
+    padding-left: 2px;
+    padding-top: 2px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid darkred;
+    background-color: var(--font-color-error);
+    cursor: pointer;
+    transition: background-color 50ms linear;
+}
+#windowClose:hover {
+    background-color: firebrick;
+}
+#windowClose:active {
+    background-color: red;
+}
+#windowMinimize {
+    position: absolute;
+    display: inline-block;
+    right: 26px;
+    top: 3px;
+    padding-left: 2px;
+    padding-top: 2px;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #555555;
+    background-color: #999999;
+    cursor: pointer;
+    transition: background-color 50ms linear;
+}
+#windowMinimize:hover {
+    background-color: #777777;
+}
+#windowMinimize:active {
+    background-color: #aaaaaa;
+}
+#windowMinimizeSvg {
+    transform: translate(-50%, -50%) rotate(0deg);
+    transition: transform 200ms ease-in-out;
+}
+.windowSvg {
+    position: absolute;
+    display: flex;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+#windowBody {
+    display: flex;
+    padding: 4px;
+    width: calc(100% - 8px);
+    height: calc(100% - 35px);
+    border-spacing: 4px;
+}
+#windowTabs {
+    display: flex;
+    flex-grow: 1;
+}
+.windowTab {
+    margin-right: 4px;
+    padding: 4px;
+    border: var(--border-dark);
+    width: 100%;
+}
+#windowTabSelect {
+    padding: 1px;
+    width: 106px;
+    border: var(--border-dark);
+    vertical-align: top;
+    overflow-y: scroll;
+}
+#windowTabSelect::-webkit-scrollbar {
+    width: 0px;
+}
+.windowTabSelectButton {
+    margin: 2px;
+    width: calc(100% - 4px);
+    font-size: 15px;
+}
+
+#debugTab {
+    padding: 0px;
+}
+#debugConsole {
+    margin-bottom: -6px;
+    padding: 4px;
+    width: calc(100% - 8px);
+    height: calc(100% - 24px);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    overflow-wrap: anywhere;
+}
+.debugConsoleText {
+    color: #ffffff;
+    font-size: 16px;
+}
+#debugConsoleInput {
+    padding: 0px 3px;
+    width: calc(100% - 6px);
+    height: 20px;
+    border: none;
+    outline: var(--border-dark);
+    font-size: 13px;
+}
+
+#settingsTab, #keybindsTab, #customizeTab {
+    overflow-y: scroll;
+}
+#settingsTab, #keybindsTab {
+    padding-top: 2px;
+}
+#settingsTable, #keybindsTable, #customizeTable {
+    font-size: 13px;
+    white-space: nowrap;
+}
+.settingsGroupLabel, .keybindsGroupLabel {
+    font-size: 14px;
+}
+.settingsLabel, .keybindsLabel, .customizeLabel {
+    display: block;
+    text-align: right;
+}
+.keybindsButton {
+    width: 90px;
+}
+#customizeCanvas {
+    display: inline-block;
+    width: 120px;
+    height: 200px;
+    vertical-align: top;
+    border: var(--border-dark);
+    background-color: var(--color-medium-dark);
+}
+#customizeTable {
+    display: inline-block;
+}
+
+#inventory {
+    border-right: var(--border-dark);
+}
+.inventoryTab {
+    padding: calc(var(--item-size) * 1px);
+    overflow-y: scroll;
+}
+.inventoryTab::-webkit-scrollbar {
+    width: 8px;
+}
+.inventoryTabName {
+    padding-left: 2px;
+    font-size: 14px; 
+}
+.item {
+    position: relative;
+    margin: calc(var(--item-size) * 1px);
+    width: calc(var(--item-size) * 16px);
+    height: calc(var(--item-size) * 16px);
+    float: left;
+    border: var(--border-dark);
+    background-repeat: no-repeat;
+    background-size: 100%;
+    cursor: grab;
+}
+.itemCooldown {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    height: 0%;
+    opacity: 0.5;
+    background-color: red;
+}
+.itemStackSize {
+    position: absolute;
+    right: 2px;
+    bottom: 0px;
+    font-size: calc(var(--item-size) * 4px);
+}
+.craft {
+    display: flex;
+    align-items: center;
+    overflow-y: hidden;
+    border: var(--border-dark);
+    border-top: none;
+    padding-right: calc(var(--item-size) * 0.5px);
+}
+.craft:nth-child(2) {
+    border-top: var(--border-dark);
+}
+.craftMaterials {
+    display: flex;
+    flex-grow: 1;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    border: var(--border-dark);
+    margin: calc(var(--item-size) * 0.5px);
+    margin-right: calc(var(--item-size) * 1px);
+}
+.craftMaterials::-webkit-scrollbar {
+    /* height: 5px; */
+    height: 0px;
+}
+.craftArrow {
+    display: inline-block;
+    position: relative;
+    /* right: -12px; */
+    /* width: 0px;
+    height: 0px; */
+    background-image: url("../images/ui/arrow.svg");
+    background-size: 100%;
+    width: calc(var(--item-size) * 8px);
+    height: calc(var(--item-size) * 8px);
+    flex-shrink: 0;
+    /* border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 10px solid white; */
+    /* margin-top: auto; */
+    /* margin-bottom: auto; */
+    /* transform: translate(12px, -5px); */
+}
+/* .craftArrow::before {
+    content: '';
+    display: inline-block;
+    width: 14px;
+    height: 4px;
+    background-color: white;
+    transform: translate(-24px, -16px);
+} */
+.craft .item {
+    float: none;
+    flex-shrink: 0;
+}
+
+.equipHelmet {
+    transform: translate(calc((100% + var(--item-size) * 2px) * 1.5), 0px);
+}
+.equipChestplate {
+    transform: translate(calc((100% + var(--item-size) * 2px) * 0.5), calc((100% + var(--item-size) * 2px) * 1));
+}
+.equipBoots {
+    transform: translate(calc((100% + var(--item-size) * 2px) * -0.5), calc((100% + var(--item-size) * 2px) * 2));
+}
+.equipShield {
+    clear: left;
+    transform: translate(calc((100% + var(--item-size) * 2px) * 0.5), 0px);
+}
+.equipCrystal {
+    transform: translate(calc((100% + var(--item-size) * 2px) * 1.5), 0px);
+}
+.equipAccessory1 {
+    clear: left;
+    transform: translate(calc((100% + var(--item-size) * 2px) * 0.5), 0px);
+}
+.equipAccessory2 {
+    transform: translate(calc((100% + var(--item-size) * 2px) * 1.5), 0px);
+}
+
+#hotbar {
+    position: absolute;
+    left: 50vw;
+    bottom: calc(var(--item-size) * 1px);
+    width: max-content;
+    background-color: #362a1eaa;
+    transform: translateX(-50%);
+}
+#hotbar .item {
+    background-color: var(--color-light);
+}
+
+#tooltip {
+    position: absolute;
+    padding: 4px;
+    background-color: var(--color-medium-dark);
+    border: var(--border-medium);
+    outline: var(--border-dark);
+    pointer-events: none;
+    transition: opacity 200ms linear;
+}
+#draggingItem {
+    position: absolute;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    border: none;
+    margin: 0px;
+}
+
+#versionDisplay {
+    position: absolute;
+    left: 4px;
+    bottom: 4px;
+    font-size: 10px;
+    color: #000000;
+    pointer-events: none;
+}
+.debugOverlay {
+    position: absolute;
+    padding: 2px 4px;
+    background-color: #00000055;
+    pointer-events: none;
+}
+#fpsDisplay {
+    left: 16px;
+    bottom: 20px;
+    height: 22px;
+}
+#tpsDisplay {
+    left: 16px;
+    bottom: 46px;
+    height: 22px;
+}
+#pingDisplay {
+    bottom: 72px;
+    left: 16px;
+    height: 22px;
+}
+#clientTickDisplay {
+    bottom: 102px;
+    left: 16px;
+    height: 22px;
+}
+#serverTickDisplay {
+    bottom: 128px;
+    left: 16px;
+    height: 22px;
+}
+#drawTimes {
+    left: 16px;
+    bottom: 158px;
+}
+#tickTimes {
+    left: 16px;
+    bottom: 278px;
+}
+#clientHeap {
+    left: 16px;
+    bottom: 398px;
+    height: 22px;
+}
+#serverHeap {
+    left: 16px;
+    bottom: 424px;
+    height: 22px;
+}
+
+#mousePosition {
+    right: 16px;
+    top: 16px;
+}
+#playerPosition {
+    right: 16px;
+    top: 42px;
+}
+#entityCount {
+    right: 16px;
+    top: 72px;
+    text-align: right;
+}
+
+#disconnectedContainer {
+    text-align: center;
+    overflow: hidden;
+}
+#disconnected {
+    position: relative;
+    top: 50%;
+    padding: 20px;
+    border: 8px solid #000000;
+    font-size: 64px;
+    color: #000000;
+    cursor: wait;
+    background-color: rgba(255, 0, 0, 0.5);
+    transform: translateY(-50%);
+    transition: transform 200ms ease-in-out, background-color 200ms ease-in-out;
+}
+#disconnected:hover {
+    transform: translateY(-50%) scale(2) perspective(2px);
+}
+#disconnected:active {
+    background-color: rgb(255, 0, 0);
+}

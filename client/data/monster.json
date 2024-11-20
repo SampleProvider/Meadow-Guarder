@@ -1,0 +1,327 @@
+[
+    {
+        "id": "bird",
+        "name": "Bird",
+        "width": 52,
+        "height": 52,
+        "image": "bird",
+        "imageWidth": 15,
+        "imageHeight": 13,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 4,
+        "animationDirections": 4,
+        "animationType": "DIRECTIONAL_4",
+        "animationLength": 3,
+        "animationSpeed": 0.1,
+        "animationChangeBySpeed": true,
+        "animationPhases": 1,
+        "spawnWeight": 1,
+        "boss": false,
+        "aggroMinDistance": 512,
+        "aggroMaxDistance": 2048,
+        "deathMessages": ["<name1> SUCKS!!! bad <name1>"],
+        "tauntMessages": ["<name1> is so bad at Meadow Guarder, lol.", "OOF! <name1> got rekt.", "<name1> sucks at Meadow Guarder, get better.", "<name1> rage quit!", "<name1> has to be the worst Meadow Guarder player ever!", "git gud, <name1>."],
+        "stages": [
+            {
+                "hp": 30000,
+                "hpMax": 30000,
+                "hpRegen": 0,
+                "hpRegenTime": 0,
+                "hpRegenAccelerationRate": 0,
+                "hpRegenAccelerationCap": 0,
+                "defense": 0,
+                "damageReduction": 0,
+                "knockbackResistance": 0,
+                "projectileDefense": 0,
+                "projectileDamageReduction": 0,
+                "projectileDamage": 1000,
+                "projectileSpeed": 1,
+                "projectileRange": 1,
+                "projectileAccuracy": 0,
+                "projectileKnockback": 0.000001,
+                "projectilePierce": 0,
+                "critChance": 0,
+                "critDamage": 1,
+                "critKnockback": 1,
+                "shieldKnockbackResistance": 0,
+                "shieldBlockAngle": 0,
+                "shieldReflectionChance": 0,
+                "contactDefense": 0,
+                "contactDamageReduction": 0,
+                "contactDamage": 10000,
+                "contactEvents": [],
+                "contactKnockback": 1,
+                "heldItem": 0,
+                "animationPhase": 0,
+                "moveSpeed": 5,
+                "retreatMinThreshold": 0.5,
+                "retreatMaxThreshold": 0.7,
+                "circleDistance": 256,
+                "smartAim": 1,
+                "startAttacks": [
+                ],
+                "loopedAttacks": [
+                    {
+                        "weight": 5,
+                        "cooldown": 20,
+                        "attacks": [
+                            {
+                                "pattern": "single",
+                                "data": {
+                                    "projectile": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "weight": 1,
+                        "cooldown": 20,
+                        "attacks": [
+                            {
+                                "pattern": "buh",
+                                "data": {
+                                    "projectile": 5,
+                                    "deviation": 2
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "randomAttacks": [
+                    {
+                        "chance": 0.1,
+                        "attacks": [
+                            {
+                                "pattern": "cameraShake",
+                                "data": {
+                                    "diameter": 4024,
+                                    "magnitude": 50,
+                                    "decay": 0.05
+                                }
+                            },
+                            {
+                                "pattern": "cameraFlash",
+                                "data": {
+                                    "diameter": 4024,
+                                    "opacity": 0.5,
+                                    "duration": 2000,
+                                    "color": "#ffffff"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "endTrigger": {
+                    "type": "hp",
+                    "data": {
+                        "hp": 0.1
+                    }
+                }
+            },
+            {
+                "hp": 30000,
+                "hpMax": 30000,
+                "hpRegen": 0,
+                "hpRegenTime": 0,
+                "hpRegenAccelerationRate": 0,
+                "hpRegenAccelerationCap": 0,
+                "defense": 0,
+                "damageReduction": 0,
+                "knockbackResistance": 0,
+                "projectileDefense": 0,
+                "projectileDamageReduction": 0,
+                "projectileDamage": 500,
+                "projectileSpeed": 1,
+                "projectileRange": 1,
+                "projectileAccuracy": 0,
+                "projectileKnockback": 1,
+                "projectilePierce": 0,
+                "critChance": 0,
+                "critDamage": 1,
+                "critKnockback": 1,
+                "shieldKnockbackResistance": 0,
+                "shieldBlockAngle": 0,
+                "shieldReflectionChance": 0,
+                "contactDefense": 1000,
+                "contactDamageReduction": 0,
+                "contactDamage": 99,
+                "contactEvents": [],
+                "contactKnockback": 1,
+                "heldItem": 0,
+                "animationPhase": 0,
+                "moveSpeed": 15,
+                "retreatMinThreshold": 0,
+                "retreatMaxThreshold": 0,
+                "circleDistance": -256,
+                "smartAim": 2,
+                "endTrigger": {
+                    "type": "none"
+                },
+                "startAttacks": [
+                ],
+                "loopedAttacks": [
+                    {
+                        "weight": 5,
+                        "cooldown": 2,
+                        "attacks": [
+                            {
+                                "pattern": "triple",
+                                "data": {
+                                    "projectile": 2,
+                                    "deviation": 5
+                                }
+                            },
+                            {
+                                "pattern": "triple",
+                                "data": {
+                                    "projectile": 5,
+                                    "deviation": 25
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "weight": 1,
+                        "cooldown": 20,
+                        "attacks": [
+                            {
+                                "pattern": "buh",
+                                "data": {
+                                    "projectile": 5,
+                                    "deviation": 2
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "randomAttacks": [
+                    {
+                        "chance": 0.4,
+                        "attacks": [
+                            {
+                                "pattern": "single",
+                                "data": {
+                                    "projectile": 0
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "chance": 0.1,
+                        "attacks": [
+                            {
+                                "pattern": "single",
+                                "data": {
+                                    "projectile": 1
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "chance": 0.3,
+                        "attacks": [
+                            {
+                                "pattern": "triple",
+                                "data": {
+                                    "projectile": 3,
+                                    "deviation": 25
+                                }
+                            },
+                            {
+                                "pattern": "triple",
+                                "data": {
+                                    "projectile": 4,
+                                    "deviation": 25
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "xp": 10,
+        "drops": {
+            "coins": 10
+        }
+    },
+    {
+        "id": "template",
+        "name": "Template",
+        "width": 60,
+        "height": 52,
+        "image": "bird",
+        "imageWidth": 15,
+        "imageHeight": 13,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 4,
+        "animationDirections": 4,
+        "animationType": "DIRECTIONAL_4",
+        "animationLength": 3,
+        "animationSpeed": 0.1,
+        "animationChangeBySpeed": true,
+        "spawnWeight": 1,
+        "boss": false,
+        "aggroMinDistance": 100,
+        "aggroMaxDistance": 1000,
+        "smartAim": true,
+        "stages": [
+            {
+                "hp": 30000,
+                "hpMax": 30000,
+                "hpRegen": 0,
+                "hpRegenTime": 0,
+                "hpRegenAccelerationRate": 0,
+                "hpRegenAccelerationCap": 0,
+                "defense": 0,
+                "damageReduction": 0,
+                "knockbackResistance": 0,
+                "projectileDefense": 0,
+                "projectileDamageReduction": 0,
+                "projectileDamage": 0,
+                "projectileSpeed": 1,
+                "projectileRange": 1,
+                "projectileAccuracy": 0,
+                "projectileKnockback": 1,
+                "projectilePierce": 0,
+                "critChance": 0,
+                "critDamage": 1,
+                "critKnockback": 1,
+                "shieldKnockbackResistance": 0,
+                "shieldBlockAngle": 0,
+                "shieldReflectionChance": 0,
+                "contactDefense": 0,
+                "contactDamageReduction": 0,
+                "contactDamage": 0,
+                "contactEvents": [],
+                "contactKnockback": 1,
+                "heldItem": 0,
+                "animationPhase": 0,
+                "moveSpeed": 5,
+                "circleDistance": -256,
+                "endTrigger": {
+                    "type": "none"
+                },
+                "startAttacks": [
+                ],
+                "loopedAttacks": [
+                    {
+                        "weight": 1,
+                        "cooldown": 20,
+                        "pattern": "single",
+                        "data": {
+                            "projectile": 1
+                        }
+                    }
+                ],
+                "randomAttacks": [
+                ]
+            }
+        ],
+        "xp": 10,
+        "drops": {
+            "coins": 10
+        }
+    }
+]

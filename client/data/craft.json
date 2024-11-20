@@ -1,0 +1,59 @@
+[
+    {
+        "id": "apple",
+        "stackSize": 10,
+        "enchantments": [],
+        "materials": [
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            },
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            },
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            },
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            }
+        ]
+    },
+    {
+        "id": "apple",
+        "stackSize": 10,
+        "enchantments": [],
+        "materials": [
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            },
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            },
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            },
+            {
+                "id": "apple",
+                "stackSize": 10000000
+            }
+        ]
+    },
+    {
+        "id": "apple",
+        "stackSize": 10,
+        "enchantments": [],
+        "materials": [
+            {
+                "id": "apple",
+                "stackSize": 1
+            }
+        ]
+    }
+]

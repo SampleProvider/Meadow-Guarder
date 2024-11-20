@@ -1,0 +1,504 @@
+[
+    {
+        "id": "arrow",
+        "width": 52,
+        "height": 12,
+        "image": "arrow",
+        "imageWidth": 13,
+        "imageHeight": 3,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 4,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 1,
+        "speed": 40,
+        "range": 40,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> was shot by <name2>.", "<name1> was sniped by <name2>."],
+        "offsetPosition": true,
+        "collision": true,
+        "stickToCollision": true,
+        "stickToCollisionTime": 60000
+    },
+    {
+        "id": "explosiveArrow",
+        "width": 78,
+        "height": 18,
+        "image": "explosiveArrowTest",
+        "imageWidth": 13,
+        "imageHeight": 3,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 6,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 1,
+        "speed": 40,
+        "range": 40,
+        "knockback": 10,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> was blown up by <name2>.", "<name1> got blown to pieces due to <name2>.", "<name1> exploded due to <name2>.", "<name1> was shot and subsequently blew up due to <name2>.", "<name1> got sniped with an explosive arrow and blew up due to <name2>.", "<name1> went boom with the help of <name2>."],
+        "offsetPosition": true,
+        "collision": true,
+        "stickToCollision": false,
+        "contactEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 128
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 128,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 128
+                }
+            }
+        ],
+        "collisionEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 128
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 128,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 128
+                }
+            }
+        ],
+        "rangeEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 128
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 128,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 128
+                }
+            }
+        ]
+    },
+    {
+        "id": "magicBall",
+        "width": 36,
+        "height": 36,
+        "image": "magicBall",
+        "imageWidth": 9,
+        "imageHeight": 9,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 4,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 10,
+        "speed": 4,
+        "range": 40,
+        "knockback": 0,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> was purpled to death by <name2>.", "<name2> used purple magic to kill <name1>.", "<name1> got oofed by <name2>."],
+        "offsetPosition": false,
+        "pattern": {
+            "type": "spin",
+            "data": {
+                "speed": 25
+            }
+        },
+        "collision": true,
+        "bouncy": true,
+        "bounceAngle": true
+    },
+    {
+        "id": "op_arrow",
+        "width": 104,
+        "height": 24,
+        "image": "explosiveArrowTest",
+        "imageWidth": 13,
+        "imageHeight": 3,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 8,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 2,
+        "speed": 40,
+        "range": 60,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> got nuked by <name2>."],
+        "offsetPosition": false,
+        "pattern": {
+            "type": "sin",
+            "data": {
+                "speed": 2,
+                "magnitude": 30
+            }
+        },
+        "collision": true,
+        "stickToCollision": false,
+        "contactEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ],
+        "collisionEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ],
+        "rangeEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ]
+    },
+    {
+        "id": "op_arrow3",
+        "width": 104,
+        "height": 24,
+        "image": "explosiveArrowTest",
+        "imageWidth": 13,
+        "imageHeight": 3,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 8,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 2,
+        "speed": 40,
+        "range": 60,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> got sniped with a tiny arrow by <name2>."],
+        "offsetPosition": false,
+        "pattern": {
+            "type": "sin",
+            "data": {
+                "speed": 2,
+                "magnitude": -30
+            }
+        },
+        "collision": true,
+        "stickToCollision": false,
+        "contactEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ],
+        "collisionEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ],
+        "rangeEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ]
+    },
+    {
+        "id": "op_arrowLOL",
+        "width": 104,
+        "height": 24,
+        "image": "explosiveArrowTest",
+        "imageWidth": 13,
+        "imageHeight": 3,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 1,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 2,
+        "speed": 15,
+        "range": 60,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> got nuked by <name2>."],
+        "offsetPosition": false,
+        "pattern": {
+            "type": "sin",
+            "data": {
+                "speed": 4,
+                "magnitude": 30
+            }
+        },
+        "collision": true,
+        "stickToCollision": false,
+        "contactEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ],
+        "collisionEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ],
+        "rangeEvents": [
+            {
+                "type": "explosion",
+                "data": {
+                    "diameter": 32
+                }
+            },
+            {
+                "type": "areaEffect",
+                "data": {
+                    "diameter": 32,
+                    "effect": "fire",
+                    "duration": 120
+                }
+            },
+            {
+                "type": "particle",
+                "data": {
+                    "particle": "EXPLOSION",
+                    "value": 32
+                }
+            }
+        ]
+    },
+    {
+        "id": "op_arrow2",
+        "width": 104,
+        "height": 24,
+        "image": "arrow",
+        "imageWidth": 13,
+        "imageHeight": 3,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 8,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 2,
+        "speed": 40,
+        "range": 40,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> was shot by <name2>.", "<name1> was sniped by <name2>."],
+        "offsetPosition": true,
+        "pattern": {
+            "type": "sin",
+            "data": {
+                "speed": 30,
+                "magnitude": 30
+            }
+        },
+        "collision": true,
+        "stickToCollision": true,
+        "stickToCollisionTime": 60
+    }
+]

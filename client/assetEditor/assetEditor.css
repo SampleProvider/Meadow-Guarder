@@ -1,0 +1,459 @@
+@font-face {
+    font-family: "Miniset";
+    src: url(/assets/Miniset.woff) format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    margin: 0px;
+    user-select: none;
+    overflow: hidden;
+    font-family: "Miniset";
+    font-size: 16px;
+    --canvas-aspect-ratio: 1;
+}
+button, select, option, input, textarea {
+    margin: 2px;
+    border: 2px solid black;
+    font-family: "Miniset";
+    font-size: 14px;
+    background-color: whitesmoke;
+    vertical-align: top;
+    cursor: pointer;
+}
+button, option {
+    transition: background-color 100ms linear;
+}
+button:hover, option:hover {
+    background-color: darkgray;
+}
+input[type="text"], input[type="number"], textarea {
+    cursor: text;
+}
+input[type="range"] {
+    appearance: none;
+    margin-left: 0px;
+    margin-right: -2px;
+    height: 15px;
+    cursor: default;
+}
+input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border: 2px solid black;
+    background: darkgray;
+    cursor: pointer;
+}
+input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+}
+input[type="color"] {
+    margin: 0px;
+    padding: 0px;
+    width: 50px;
+    height: 28px;
+    border: none;
+    background-color: lightgray;
+    cursor: pointer;
+}
+textarea {
+    display: block;
+    min-height: 18px;
+    resize: vertical;
+}
+canvas {
+    image-rendering: pixelated;
+}
+
+
+.toggle {
+    position: relative;
+    display: inline-block;
+    margin: 6px 0px;
+    width: 40px;
+    height: 16px;
+    line-height: 100%;
+}
+.toggleInput {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
+.toggleSlider {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 40px;
+    height: 16px;
+    background-color: #ee0000;
+    outline: 2px solid black;
+    transition: background-color 100ms linear;
+    cursor: pointer;
+}
+.toggleSlider::before {
+    position: absolute;
+    content: "";
+    left: 0px;
+    top: -2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    outline: 2px solid black;
+    transition: transform 100ms linear;
+}
+.toggleInput:checked + .toggleSlider {
+    background-color: #00aa00;
+}
+.toggleInput:checked + .toggleSlider::before {
+    transform: translateX(20px);
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    cursor: default;
+}
+::-webkit-scrollbar-track {
+    background-color: rgba(40, 40, 40, 0.5); 
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(20, 20, 20, 0.5); 
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(25, 25, 25, 0.5); 
+}
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(15, 15, 15, 0.5); 
+}
+
+#main {
+    display: flex;
+    width: 100vw;
+    min-height: 0px;
+    flex-grow: 1;
+    transition: filter 100ms linear;
+}
+
+#assets {
+    width: 300px;
+    min-width: 200px;
+    max-width: 500px;
+    resize: horizontal;
+    background-color: #efefef;
+    overflow-y: scroll;
+}
+.asset {
+    display: block;
+    margin-top: 8px;
+    width: calc(100% - 8px);
+    height: 40px;
+    border-left: 8px solid darkgray;
+    background-color: #bbbbbb;
+    cursor: pointer;
+    transition: border-left 100ms linear, background-color 100ms linear;
+}
+.asset:hover {
+    border-left: 8px solid gray;
+    background-color: darkgray;
+}
+.assetSelected {
+    border-left: 8px solid dimgray;
+    background-color: darkgray;
+}
+.assetSelected:hover {
+    border-left: 8px solid dimgray;
+    background-color: darkgray;
+}
+.assetImage {
+    margin: 4px;
+    height: 32px;
+    float: left;
+    image-rendering: pixelated;
+}
+.assetLabel {
+    margin: 4px;
+    height: 32px;
+    line-height: 32px;
+    font-size: 20px;
+    float: left;
+    color: black;
+}
+#addAsset {
+    display: block;
+    margin: 8px;
+    width: calc(100% - 16px);
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #cccccc;
+    font-size: 20px;
+    color: black;
+    cursor: pointer;
+    transition: background-color 100ms linear;
+}
+#addAsset:hover {
+    background-color: darkgray;
+}
+#editor {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    min-width: 0px;
+}
+
+#header {
+    display: flex;
+    padding: 4px;
+    width: 100%;
+    background-color: darkgray;
+}
+#header label, #header input {
+    display: inline-block;
+    margin: auto;
+}
+#header input {
+    flex-grow: 1;
+    margin-left: 4px;
+    margin-right: 16px;
+}
+#header input:last-child {
+    margin-right: 8px;
+}
+#body {
+    display: flex;
+    flex-grow: 1;
+    min-height: 0px;
+}
+#canvasEditor {
+    display: flex;
+    flex-grow: 7;
+    min-width: 0px;
+    margin-right: -4px;
+    background-color: whitesmoke;
+}
+#canvasEditorLeft, #canvasEditorRight {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 2px;
+}
+#canvasEditorLeft {
+    resize: horizontal;
+    overflow-x: hidden;
+}
+#canvasEditorRight {
+    margin-left: -4px;
+}
+#mapSettings {
+    margin: 2px;
+    margin-bottom: -2px;
+    background-color: lightgray;
+    padding-left: 4px;
+}
+#mapSettings span {
+    margin-right: -4px;
+    vertical-align: middle;
+}
+#canvas {
+    margin: 2px;
+    flex-grow: 1;
+    min-height: 0px;
+    aspect-ratio: unset;
+}
+#pixelArtFrames {
+    display: flex;
+    justify-content: center;
+    margin: 2px;
+    margin-top: -2px;
+    padding: 0px 2px;
+    flex-shrink: 0;
+    overflow-x: scroll;
+    background-color: lightgray;
+}
+#pixelArtFrames::-webkit-scrollbar {
+    height: 4px;
+}
+.pixelArtFrame {
+    width: 32px;
+    height: 28px;
+    margin: 0px 2px;
+    border: none;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    outline: none;
+    font-size: 16px;
+    text-align: center;
+    cursor: pointer;
+    /* background-color: #dfdfdf; */
+    background-color: #b0b0b0;
+    transition: background-color 100ms linear;
+}
+.pixelArtFrame:hover {
+    background-color: silver;
+}
+.pixelArtFrameSelected, .pixelArtFrameSelected:hover {
+    background-color: #dfdfdf;
+}
+#pixelArtPaletteContainer, #mapLayersContainer, #mapTerrainsContainer {
+    resize: vertical;
+    min-height: 0px;
+    height: 50%;
+}
+#pixelArtPalette {
+    display: grid;
+    grid-template-columns: repeat(11, auto);
+    margin-top: 2px;
+}
+.pixelArtPaletteColor {
+    margin: 0px;
+    width: 24px;
+    height: 24px;
+    border: 2px solid transparent;
+}
+.pixelArtPaletteColor:hover {
+    border: 2px solid black;
+}
+.pixelArtPaletteColorSelected {
+    border: 2px solid gold;
+}
+.pixelArtPaletteColorSelected:hover {
+    border: 2px solid gold;
+}
+#pixelArtPalette, #mapLayers, #mapTerrains {
+    margin-top: 2px;
+    flex-grow: 1;
+    overflow-y: scroll;
+    border: 2px solid black;
+    padding: 4px;
+    min-height: 0px;
+}
+#mapTiles {
+    display: flex;
+    border: 2px solid black;
+    aspect-ratio: 2;
+    min-width: 300px;
+}
+#tilesCanvas {
+    position: absolute;
+    /* display: flex; */
+    border: 2px solid black;
+}
+.mapLayer, .mapTerrain {
+    cursor: pointer;
+    padding-bottom: 2px;
+}
+.mapLayer {
+    display: flex;
+    /* padding-left: 2px; */
+    padding: 2px;
+}
+.mapLayerSelected, .mapTerrainSelected {
+    background-color: darkgray;
+}
+.mapLayerNameInput {
+    flex-grow: 1;
+    /* width: unset !important; */
+    margin: 0px;
+    /* margin-right: 2px; */
+    /* margin-top: 2px; */
+}
+.mapLayerButtonUp, .mapLayerButtonDown {
+    float: right;
+    margin: 0px;
+    margin-left: 2px;
+}
+.mapLayerButtonUp {
+    transform: rotate(180deg);
+}
+.mapLayerInput {
+    width: 30px;
+    margin: 0px;
+    margin-left: 2px;
+    /* margin-top: 2px; */
+}
+.mapTerrainsImage {
+    float: left;
+    width: 20px;
+    height: 20px;
+    /* margin: 2px; */
+    margin-left: 2px;
+    margin-right: 6px;
+    margin-top: 2px;
+    image-rendering: pixelated;
+}
+
+#propertyEditor {
+    padding: 2px;
+    width: min-content;
+    min-width: 200px;
+    overflow-y: scroll;
+    background-color: whitesmoke;
+}
+.property {
+    float: left;
+    width: calc(100% - 12px);
+    margin: 2px;
+    padding: 4px;
+    background-color: lightgray;
+    display: flex;
+    flex-direction: column;
+}
+.property b {
+    margin: 2px;
+    /* margin-right: -4px; */
+}
+.property label {
+    margin: 2px;
+    /* margin-top: 2px; */
+    /* margin-bottom: 1px; */
+    /* margin-right: -4px; */
+}
+.property input[type="text"], .property textarea {
+    width: calc(100% - 12px);
+    flex-grow: 1;
+}
+.property input[type="number"], .property select {
+    flex-grow: 1;
+}
+
+#selector {
+    height: 40px;
+    flex-shrink: 0;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    background-color: darkgray;
+    white-space: nowrap;
+    padding-left: 4px;
+}
+.selectorButton {
+    margin: 0px 4px;
+    padding-top: 2px;
+    width: 100px;
+    height: 32px;
+    border: none;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    outline: none;
+    font-size: 16px;
+    color: black;
+    transition: border-top 100ms linear;
+    background-color: #dfdfdf;
+    cursor: pointer;
+}
+.selectorButton:hover {
+    border-top: 4px solid gray;
+    background-color: #dfdfdf;
+}
+.selectorButtonSelected {
+    border-top: 4px solid black;
+}
+.selectorButtonSelected:hover {
+    border-top: 4px solid black;
+}

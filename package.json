@@ -1,0 +1,32 @@
+{
+  "name": "meadow-guarder",
+  "version": "0.0.0",
+  "description": "A free to play online browser RPG game.",
+  "main": "app.js",
+  "scripts": {
+    "start": "node --max-old-space-size=8192 app.js",
+    "test": "node --prof --max-old-space-size=8192 app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maitian352/Meadow-Guarder.git"
+  },
+  "keywords": [
+    "nodejs",
+    "rpg",
+    "multiplayer",
+    "game",
+    "browser-game",
+    "meadow-guarder"
+  ],
+  "author": "MaitianSha",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "bufferutil": "^4.0.8",
+    "express": "^4.18.2",
+    "pathfinding": "^0.4.18",
+    "socket.io": "^4.7.0",
+    "utf-8-validate": "^6.0.5"
+  }
+}

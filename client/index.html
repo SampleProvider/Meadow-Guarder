@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Meadow Guarder</title>
+        <meta charset="utf-8">
+        <meta name="title" content="Meadow Guarder">
+        <meta name="description" content="omg madow garuder confirmed">
+        <meta name="url" content="https://meadowguarder.maitiansha1.repl.co/">
+        <meta name="image" content="https://meadowguarder.maitiansha1.repl.co/images/menu/bannerSmall.png">
+        <link rel="icon" href="./images/menu/favicon.png" type="image/x-icon">
+        <script src="./socket.io/socket.io.js"></script>
+        <script>const socket = io({ maxHttpBufferSize: 1e8 }); io = null; socket.connect = socket.disconnect;</script>
+        <script src="./data/constants.js"></script>
+        <script src="./js/loader.js" defer></script>
+        <script src="./js/game.js" defer></script>
+        <script src="./js/maps.js" defer></script>
+        <script src="./js/entity.js" defer></script>
+        <script src="./js/chat.js" defer></script>
+        <script src="./js/inventory.js" defer></script>
+        <script src="./js/settings.js" defer></script>
+        <script src="./js/index.js" defer></script>
+        <script src="./js/menu.js" defer></script>
+        <link rel="stylesheet" type="text/css" href="./css/style.css">
+        <link rel="stylesheet" type="text/css" href="./css/menu.css">
+        <link rel="stylesheet" type="text/css" href="./css/game.css">
+    </head>
+    <body>
+        <div id="menuContainer" class="container" style="display: block;">
+            <image id="backgroundImage" src="./images/menu/preview.png">
+            <div id="backgroundShade"></div>
+            <div id="menuTitle">Meadow Guarder</div>
+            <div id="stackLeft">
+                <div class="signInStack stack block">
+                    <table>
+                        <tr>
+                            <td style="text-align: right;">
+                                <label for="username">Username:</label><br>
+                            </td>
+                            <td>
+                                <input id="username" class="input" type="text" maxlength="30" autocomplete="off" autocapitalize="off" required>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: right;">
+                                <label for="password">Password:</label><br>
+                            </td>
+                            <td>
+                                <input id="password" name="password" class="input" type="password" maxlength="120" autocomplete="current-password" autocapitalize="off" required>
+                            </td>
+                        </tr>
+                        <tr id="retypePasswordForm" style="display: none;">
+                            <td style="text-align: right;">
+                                <label for="retypePassword">Retype Password:</label><br>
+                            </td>
+                            <td>
+                                <input id="retypePassword" class="input" type="password" maxlength="120" autocomplete="new-password" autocapitalize="off" required>
+                            </td>
+                        </tr>
+                        <tr id="newPasswordForm" style="display: none;">
+                            <td style="text-align: right;">
+                                <label for="newPassword">New Password:</label><br>
+                            </td>
+                            <td>
+                                <input id="newPassword" class="input" type="password" maxlength="120" autocomplete="new-password" autocapitalize="off" required>
+                            </td>
+                        </tr>
+                        <tr id="retypeNewPasswordForm" style="display: none;">
+                            <td style="text-align: right;">
+                                <label for="retypeNewPassword">Retype New Password:</label><br>
+                            </td>
+                            <td>
+                                <input id="retypeNewPassword" class="input" type="password" maxlength="120" autocomplete="new-password" autocapitalize="off" required>
+                            </td>
+                        </tr>
+                    </table>
+                    <button id="cancelSignIn" class="signInButton button" style="display: none; color: var(--font-color-error);">Cancel</button>
+                    <br>
+                    <button id="signIn" class="signInButton button">Sign In</button>
+                    <button id="createAccount" class="signInButton button">Create Account</button>
+                    <button id="deleteAccount" class="signInButton button">Delete Account</button>
+                    <button id="changePassword" class="signInButton button">Change Password</button>
+                    <div class="stackBody">
+                        <div id="signInSuccess" style="color: var(--font-color-success);">Welcome to Meadow Guarder!</div>
+                        <div id="signInError" style="color: var(--font-color-error);"></div>
+                        <!-- <div id="insecureContextWarning" style="display: none; color: var(--font-color-warn);">Insecure context detected! Passwords will be sent in <b>PLAIN TEXT!</b></div> -->
+                        <div id="insecureContextWarning" style="display: none; color: var(--font-color-warn);"></div>
+                    </div>
+                </div>
+                <div class="stack block">
+                    <div class="stackHeader">
+                        v0.0.0 - 3/27/2023
+                    </div>
+                    <div class="stackBody">
+                        Meadow Guarder's Creation!
+                        <ul>
+                            <li>Created Replit Program.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="stack block" style="margin-top: 400%;">
+                    <div class="stackHeader">
+                        why are you down here
+                    </div>
+                    <div class="stackBody">
+                        oof oof vbuh
+                    </div>
+                </div>
+            </div>
+            <div id="stackRight">
+                <div class="stack block">
+                    <div class="stackHeader">
+                        Announcements
+                    </div>
+                    <div class="stackBody">
+                        <div class="stackSub">
+                            idk test
+                        </div>
+                        <div class="stackBody">
+                            works
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="stack block">
+                    <div class="stackHeader">
+                        Credits
+                    </div>
+                    <div class="stackBody">
+                        <span id="creditsLink" class="link">View Credits</span>
+                    </div>
+                </div> -->
+                <!-- <div class="stack block">
+                    <div class="stackHeader">
+                        More Games!
+                    </div>
+                    <div class="stackBody">
+                        Check out:
+                        <br>
+                        <a class="link" href="https://github.com/spsquared/Mountain_Guarder/" target="_blank">Mountain Guarder</a> by Sampleprovider(sp) / radioactivestuf / spsquared
+                        <br>
+                        <a class="link" href="https://redpixelsimulator.web.app/" target="_blank">Red Pixel Simulator</a> by Sampleprovider(sp) / radioactivestuf / spsquared
+                        <br>
+                        <a class="link" href="https://blue-pixel-simulator.maitiansha1.repl.co/" target="_blank">Blue Pixel Simulator</a> by MaitianSha / sp
+                        <br>
+                        <a class="link" href="https://www.khanacademy.org/computer-programming/pixel-simulator/6694705906106368/" target="_blank">The Original Pixel Simulator</a> by MaitianSha / sp
+                    </div>
+                </div> -->
+            </div>
+        </div>
+        <div id="loadingContainer" class="container" style="display: none;">
+            <image id="loadingIcon" src="./images/menu/favicon.png">
+            <div id="loadingBar" style="display: none;">
+                <div id="loadingBarInner"></div>
+                <div id="loadingBarText">0/0 (0%)</div>
+            </div>
+        </div>
+        <div id="creditsContainer" class="container" style="display: none;">
+            <div id="creditsScroll">
+                <div class="creditsBlock">
+                    <div id="creditsTitle">Meadow Guarder</div>
+                    <image id="creditsLogo" src="./images/menu/favicon.png">
+                    <br>
+                    <h1 id="creditsName">SampleProvider</h1>
+                    <br>
+                    <br>
+                </div>
+                <div class="creditsBlock">
+                    <div class="creditsLine"></div>
+                    <h1>Design & Programming</h1>
+                    <div class="creditsTable">
+                        <p>Lead Developer</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352/" target="_blank">sp</a>
+                        </p>
+                        <p>Bug Finder</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/Tianmu.png">
+                            <a href="https://github.com/Tianmu695/" target="_blank">Tianmu</a>
+                        </p>
+                    </div>
+                    <br>
+                    <h1>Sprite Images</h1>
+                    <div class="creditsTable">
+                        <p>Main Artist</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352/" target="_blank">sp</a>
+                        </p>
+                        <p>Item Sprites</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/Kyrise.png">
+                            <a href="https://kyrise.itch.io/" target="_blank">Kyrise</a>
+                        </p>
+                        <p>Inspiration for Player Sprites</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/CouchFerretMakesGames.jpg">
+                            <a href="https://www.youtube.com/channel/UCp5WDvPDLCkSZWp9hP5xIvQ/" target="_blank">CouchFerret Makes Games</a>
+                        </p>
+                    </div>
+                    <br>
+                    <h1>Maps</h1>
+                    <div class="creditsTable">
+                        <p>Main Designer</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352/" target="_blank">sp</a>
+                        </p>
+                        <p>Inspiration for Map Editor in Asset Editor</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/Tiled.png">
+                            <a href="https://www.mapeditor.org/" target="_blank">Tiled</a>
+                        </p>
+                        <p>Map Tilesets</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/Kenney.png">
+                            <a href="https://www.kenney.nl/" target="_blank">Kenney</a>
+                        </p>
+                    </div>
+                    <br>
+                    <h1>Music</h1>
+                    <div class="creditsTable">
+                        <p>The Meadow</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352" target="_blank">sp</a>
+                        </p>
+                        <p>Birds</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352" target="_blank">sp</a>
+                        </p>
+                        <p>Unreleased</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352" target="_blank">sp</a>
+                        </p>
+                        <p>Unreleased</p>
+                        <p>
+                            <image class="creditsLogo" src="./images/menu/logos/sp.png">
+                            <a href="https://github.com/maitian352" target="_blank">sp</a>
+                        </p>
+                    </div>
+                    <br>
+                </div>
+                <div class="creditsBlock">
+                    <div class="creditsLine"></div>
+                    <h1>Thanks</h1>
+                    <div>
+                        <p>
+                            <a href="https://github.com/Tianmu695/" target="_blank">Tianmu</a> - Game Design and Motivation
+                        </p>
+                        <br>
+                        <p>
+                            <a href="https://github.com/definitely-nobody-is-here/" target="_blank">Sampleprovider(sp)</a> - Game Inspiration
+                        </p>
+                        <br>
+                        <p>
+                            <a href="https://scripterswar.com/" target="_blank">Scripters War / rc</a> - Game Inspiration
+                        </p>
+                        <br>
+                        <p>
+                            <a href="https://www.youtube.com/@ScriptersWar/" target="_blank">Scripters War / rc</a> - Multiplayer NodeJS Game Tutorials
+                        </p>
+                        <br>
+                        <p>
+                            <a href="https://www.khanacademy.org/" target="_blank">Khanacademy</a> - Javascript / HTML / CSS Tutorials and Guide
+                        </p>
+                        <br>
+                        <p>
+                            <a href="https://www.w3schools.com/" target="_blank">W3Schools</a> - Javascript / HTML / CSS Tutorials and Guide
+                        </p>
+                        <br>
+                        <p>
+                            <a href="https://www.deviantart.com/7soul1/art/420-Pixel-Art-Icons-for-RPG-129892453/" target="_blank">7Soul1</a> - Inspiration for Meadow Guarder Logo
+                        </p>
+                        <br>
+                        <p>You - Playing Meadow Guarder</p>
+                    </div>
+                    <br>
+                </div>
+                <div class="creditsBlock">
+                    <div class="creditsLine"></div>
+                    <a href="./license.html" target="_blank">Copyright &copy; 2023 MaitianSha</a>
+                    <br>
+                    <br>
+                    <a href="https://github.com/maitian352/Meadow-Guarder" target="_blank">Source Code on Github &middot; maitian352/Meadow-Guarder</a>
+                    <br>
+                </div>
+            </div>
+        </div>
+        <div id="gameContainer" class="container" style="display: none;">
+            <canvas id="canvas"></canvas>
+            <div id="versionDisplay">v0.0.0</div>
+            <div id="fpsDisplay" class="debugOverlay">FPS: 0</div>
+            <div id="debugOverlay" style="display: none;">
+                <div id="tpsDisplay" class="debugOverlay">TPS: 0</div>
+                <div id="pingDisplay" class="debugOverlay">Ping: 0ms</div>
+                <div id="clientTickDisplay" class="debugOverlay">Client Tick: 0</div>
+                <div id="serverTickDisplay" class="debugOverlay">Server Tick: 0</div>
+                <div id="drawTimes" class="debugOverlay">
+                    Draw Times:
+                    <div id="totalDrawTime">Total: 0ms</div>
+                    <div id="entityDrawTime">Entity: 0ms</div>
+                    <div id="mapDrawTime">Map: 0ms</div>
+                    <div id="debugDrawTime">Debug: 0ms</div>
+                </div>
+                <div id="tickTimes" class="debugOverlay">
+                    Tick Times:
+                    <div id="totalTickTime">Total: 0ms</div>
+                    <div id="playerTickTime">Player: 0ms</div>
+                    <div id="monsterTickTime">Monster: 0ms</div>
+                    <div id="projectileTickTime">Projectile: 0ms</div>
+                </div>
+                <div id="clientHeap" class="debugOverlay">Client Heap: 0/0MB</div>
+                <div id="serverHeap" class="debugOverlay">Server Heap: 0/0MB</div>
+                <div id="playerPosition" class="debugOverlay">(0, 0)</div>
+                <div id="mousePosition" class="debugOverlay">(0, 0)</div>
+                <div id="entityCount" class="debugOverlay">
+                    <div id="totalEntityCount">Total: 0</div>
+                    <div id="monsterEntityCount">Monsters: 0</div>
+                    <div id="projectileEntityCount">Projectiles: 0</div>
+                    <div id="particleEntityCount">Particles: 0</div>
+                </div>
+            </div>
+            <div id="respawnContainer" class="container" style="display: none;">
+                <div id="respawnText">You Died!</div>
+                <div id="respawnCooldown">5</div>
+                <button id="respawnButton">Respawn</button>
+            </div>
+            <div id="stats" class="block fadeable">
+                <div class="statsBar">
+                    <div id="statsHealthValue" class="statsValue" style="background-color: #ff0000;"></div>
+                    <div id="statsHealthText" class="statsText">0 / 100</div>
+                </div>
+                <div class="statsBar">
+                    <div id="statsXpValue" class="statsValue" style="background-color: #cccc00;"></div>
+                    <div id="statsXpText" class="statsText">0 / 100</div>
+                </div>
+                <div class="statsBar">
+                    <div id="statsManaValue" class="statsValue" style="background-color: #9900ff;"></div>
+                    <div id="statsManaText" class="statsText">0 / 100</div>
+                </div>
+            </div>
+            <div id="chat"></div>
+            <input id="chatInput" class="input" type="text" maxlength="256" autocomplete="off" spellcheck="false">
+            <div id="regionDisplayContainer">
+                <div id="regionDisplay" class="block fadeable">
+                    <div id="regionDisplayLarge" style="color: var(--font-color-brown); font-size: 4vw;"></div>
+                    <div id="regionDisplaySmall" style="color: var(--font-color-brown); font-size: 2vw;"></div>
+                </div>
+            </div>
+            <div id="hotbar" class="block fadeable"></div>
+            <div id="window" class="block" style="display: none;">
+                <div id="windowBar">
+                    <span id="windowName">Window</span>
+                    <span id="windowMinimize">
+                        <svg id="windowMinimizeSvg" class="windowSvg" width="10" height="10">
+                            <line x1="0" y1="2.5" x2="5" y2="7.5" stroke="black" strokeWidth="5"></line>
+                            <line x1="10" y1="2.5" x2="5" y2="7.5" stroke="black" strokeWidth="5"></line>
+                        </svg>
+                    </span>
+                    <span id="windowClose">
+                        <svg class="windowSvg" width="10" height="10">
+                            <line x1="0" y1="0" x2="10" y2="10" stroke="black" strokeWidth="5"></line>
+                            <line x1="0" y1="10" x2="10" y2="0" stroke="black" strokeWidth="5"></line>
+                        </svg>
+                    </span>
+                </div>
+                <div id="windowBody">
+                    <div id="windowTabs">
+                        <div class="windowTab" style="display: none;"></div>
+                        <div class="windowTab" style="display: none;"></div>
+                        <div id="debugTab" class="windowTab" style="display: none;">
+                            <div id="debugConsole"></div>
+                            <input id="debugConsoleInput" class="input" type="text" autocomplete="off" spellcheck="false">
+                        </div>
+                        <div id="settingsTab" class="windowTab" style="display: none;">
+                            <table id="settingsTable"></table>
+                        </div>
+                        <div id="keybindsTab" class="windowTab" style="display: none;">
+                            <table id="keybindsTable"></table>
+                        </div>
+                        <div id="customizeTab" class="windowTab" style="display: none;">
+                            <canvas id="customizeCanvas" width="12" height="20"></canvas>
+                            <table id="customizeTable"></table>
+                        </div>
+                        <div id="inventoryTab" class="inventoryTab windowTab" style="display: none;">
+                            <div class="inventoryTabName">Items</div>
+                        </div>
+                        <div id="equipTab" class="inventoryTab windowTab" style="display: none;">
+                            <div class="inventoryTabName">Equips</div>
+                        </div>
+                        <div id="craftTab" class="inventoryTab windowTab" style="display: none;">
+                            <div class="inventoryTabName">Crafts</div>
+                        </div>
+                        <div class="windowTab" style="display: none;">
+                            <div class="windowTabName">Body</div>
+                        </div>
+                    </div>
+                    <div id="windowTabSelect">
+                        <button class="windowTabSelectButton button">Inbox</button>
+                        <button class="windowTabSelectButton button">Changelog</button>
+                        <button class="windowTabSelectButton button">Debug</button>
+                        <button class="windowTabSelectButton button">Settings</button>
+                        <button class="windowTabSelectButton button">Keybinds</button>
+                        <button class="windowTabSelectButton button">Customize</button>
+                        <button class="windowTabSelectButton button">Inventory</button>
+                        <button class="windowTabSelectButton button">Crafting</button>
+                        <button class="windowTabSelectButton button">Salvaging</button>
+                        <button class="windowTabSelectButton button">World Map</button>
+                    </div>
+                </div>
+            </div>
+            <div id="draggingItem" class="item" style="display: none;">
+                <div class="itemCooldown"></div>
+                <div class="itemStackSize">1</div>
+            </div>
+            <div id="tooltip">
+                <div id="tooltipTitle"></div>
+                <div id="tooltipSubtitle"></div>
+                <div id="tooltipDescription"></div>
+            </div>
+            <div id="canvasFlash"></div>
+            <div id="canvasShade"></div>
+        </div>
+        <div id="disconnectedContainer" class="container" style="display: none;">
+            <button id="disconnected" onclick="window.location.reload()">DISCONNECTED</button>
+        </div>
+    </body>
+</html>

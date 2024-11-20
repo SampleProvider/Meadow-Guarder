@@ -1,0 +1,54 @@
+[
+    {
+        "id": "world",
+        "name": "World",
+        "startX": 0,
+        "startY": 0,
+        "endX": 1,
+        "endY": 1,
+        "map": {
+            "0": {
+                "0": [
+                    null,
+                    null,
+                    null,
+                    null
+                ]
+            }
+        },
+        "layers": [
+            {
+                "name": "Ground",
+                "layer": 0
+            },
+            {
+                "name": "Ground",
+                "layer": 1
+            },
+            {
+                "name": "Ground",
+                "layer": 2
+            },
+            {
+                "name": "Ground",
+                "layer": 3
+            },
+            {
+                "name": "Hill",
+                "layer": 0
+            },
+            {
+                "name": "Hill",
+                "layer": 1
+            },
+            {
+                "name": "Hill",
+                "layer": 2
+            },
+            {
+                "name": "Hill",
+                "layer": 3
+            }
+        ]
+    }
+]

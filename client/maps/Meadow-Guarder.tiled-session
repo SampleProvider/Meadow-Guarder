@@ -1,0 +1,67 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "",
+    "expandedProjectPaths": [
+    ],
+    "file.lastUsedOpenFilter": "All Files (*)",
+    "fileStates": {
+        "../maps - Copy/World - Copy.tmx": {
+            "scale": 4,
+            "selectedLayer": 18,
+            "viewCenter": {
+                "x": -60.875,
+                "y": 30.625
+            }
+        },
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx": {
+            "scale": 5.5,
+            "selectedLayer": 27,
+            "viewCenter": {
+                "x": 1953.5454545454545,
+                "y": 375
+            }
+        },
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/tiles.tsx": {
+            "scaleInDock": 1
+        },
+        "tileset.tsx": {
+            "scaleInDock": 0.5,
+            "scaleInEditor": 11
+        },
+        "untitled.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": -17,
+                "y": 228.33333333333334
+            }
+        }
+    },
+    "frame.defaultDuration": 200,
+    "last.exportedFilePath": "C:/Users/gbsha/Documents/Github/Meadow-Guarder/client/maps",
+    "last.imagePath": "C:/Users/gbsha/Documents/Github/Meadow-Guarder/client/maps",
+    "lastUsedTilesetExportFilter": "All Files (*)",
+    "map.fixedSize": false,
+    "map.lastUsedExportFilter": "All Files (*)",
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "openFiles": [
+    ],
+    "project": "Meadow-Guarder.tiled-project",
+    "property.type": "bool",
+    "recentFiles": [
+        "untitled.tmx",
+        "tileset.tsx",
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.spacing": 1,
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

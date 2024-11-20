@@ -1,0 +1,25 @@
+[
+    {
+        "id": "bob",
+        "name": "Bob",
+        "customizations": {
+            "body": [0, 0, 255, 0.4],
+            "shirt": [255, 0, 255, 0],
+            "pants": [255, 255, 0, 0],
+            "eyes": [125, 75, 0, 1],
+            "gloves": [0, 0, 0, 0, 0],
+            "boots": [0, 0, 0, 0, 0],
+            "pouch": [0, 0, 0, 0, 0],
+            "hair": [175, 100, 0, 0.9, 1]
+        },
+        "moveSpeed": 3,
+        "moveType": "wander",
+        "rightClickEvents": [
+            {
+                "criteria": "!quest_5birds:xp>1500:xp<2500",
+                "dialogue": "bob1",
+                "script": "self=null"
+            }
+        ]
+    }
+]

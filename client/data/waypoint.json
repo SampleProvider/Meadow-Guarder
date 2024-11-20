@@ -1,0 +1,22 @@
+[
+    {
+        "id": "sp_spawn_cutscene",
+        "locations": [
+            {
+                "x": 10,
+                "y": 20,
+                "paths": [
+                    {
+                        "location": 1,
+                        "weight": 0.5,
+                        "path": [
+                            [10, 25],
+                            [15, 25]
+                        ],
+                        "endDelay": [50, 200]
+                    }
+                ]
+            }
+        ]
+    }
+]

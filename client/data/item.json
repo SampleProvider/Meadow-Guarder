@@ -1,0 +1,74 @@
+[
+    {
+        "id": "apple",
+        "name": "Apple",
+        "description": "buh apple",
+        "image": "apple",
+        "rarity": 1,
+        "cooldown": 10,
+        "maxStackSize": 100,
+        "equip": -1,
+        "effects": [
+            {
+                "type": "additive",
+                "id": "hp",
+                "value": 10000
+            },
+            {
+                "type": "additive",
+                "id": "projectileSpeed",
+                "value": 2
+            },
+            {
+                "type": "additive",
+                "id": "projectileDamage",
+                "value": 100
+            },
+            {
+                "type": "additive",
+                "id": "hpRegenAccelerationCap",
+                "value": 100
+            },
+            {
+                "type": "multiplicative",
+                "id": "damage",
+                "value": 1.5
+            }
+        ],
+        "hp": 10000,
+        "hpRegen": 1,
+        "hpRegenSpeed": 1,
+        "hpRegenAccelerationRate": 1,
+        "hpRegenAccelerationCap": 1,
+        "mana": 100,
+        "manaRegen": 1,
+        "manaRegenSpeed": 1,
+        "manaRegenAccelerationRate": 1,
+        "manaRegenAccelerationCap": 1,
+        "defense": 1,
+        "damageReduction": 1,
+        "knockbackResistance": 1,
+        "projectileDefense": 1,
+        "projectileDamageReduction": 1,
+        "projectileDamage": 1,
+        "projectileSpeed": 1,
+        "projectileRange": 1,
+        "projectileAccuracy": 1,
+        "projectileKnockback": 1,
+        "projectilePierce": 1,
+        "critChance": 1,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "shieldKnockbackResistance": 1,
+        "shieldBlockAngle": 1,
+        "shieldReflectionChance": 1,
+        "contactDefense": 1,
+        "contactDamageReduction": 1,
+        "contactDamage": 1,
+        "contactEvents": [],
+        "contactKnockback": 1,
+        "moveSpeed": 1,
+        "immuneEffects": [],
+        "vulnerableEffects": []
+    }
+]

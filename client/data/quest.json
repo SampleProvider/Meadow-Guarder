@@ -1,0 +1,21 @@
+[
+    {
+        "id": "bobtutorial",
+        "name": "Tutorial",
+        "criteria": {
+            "quests": [],
+            "xp": 0
+        },
+        "stages": [
+            {
+                "killMonsters": {
+                    "bird": 4,
+                    "green_bird": 1
+                },
+                "trigger": {
+
+                }
+            }
+        ]
+    }
+]

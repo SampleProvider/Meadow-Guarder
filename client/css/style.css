@@ -1,0 +1,207 @@
+@font-face {
+    font-family: "Miniset";
+    src: url(./../assets/Miniset.woff) format("woff");
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    margin: 0px;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    user-select: none;
+    --cursor: url("./../images/misc/crosshair.png") 11 11, crosshair;
+    --border-dark: 1px solid #000000;
+    --border-medium: 1px solid #725640;
+    --border-light: 1px solid #ffffff;
+    --color-light: #362a1e;
+    --color-medium-light: #2d2219;
+    --color-medium-dark: #2c2216;
+    --color-dark: #231913;
+    --color-disabled: #666666;
+    --font-color: #ffffff;
+    --font-color-brown: #362b20;
+    --font-color-success: lime;
+    --font-color-warn: yellow;
+    --font-color-error: crimson;
+    --stats-size: 1;
+    --chat-size: 1;
+    --chat-font-size: 16px;
+    --item-size: 1;
+    font-size: 16px;
+}
+div {
+    color: var(--font-color);
+    font-family: "Miniset";
+}
+button {
+    color: var(--font-color);
+    font-family: "Miniset";
+}
+input {
+    font-family: "Miniset";
+}
+img {
+    image-rendering: pixelated;
+    -webkit-user-drag: none;
+}
+canvas {
+    image-rendering: pixelated;
+}
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    cursor: default;
+}
+::-webkit-scrollbar-track {
+    background-color: rgba(40, 40, 40, 0.5); 
+}
+::-webkit-scrollbar-thumb {
+    background-color: rgba(20, 20, 20, 0.5); 
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(25, 25, 25, 0.5); 
+}
+::-webkit-scrollbar-thumb:active {
+    background-color: rgba(15, 15, 15, 0.5); 
+}
+
+.container {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    margin: 0px;
+    padding: 0px;
+    width: 100vw;
+    height: 100vh;
+}
+.block {
+    background-color: var(--color-light);
+    border: var(--border-medium);
+    outline: var(--border-dark);
+}
+.button {
+    background-color: var(--color-light);
+    border: var(--border-medium);
+    outline: var(--border-dark);
+    cursor: pointer;
+    transition: background-color 50ms linear, filter 50ms linear;
+}
+.button:hover {
+    background-color: var(--color-medium-light);
+}
+.button:active {
+    background-color: var(--color-dark);
+}
+.button:disabled {
+/*     background-color: var(--color-disabled); */
+    filter: grayscale(100%);
+    cursor: not-allowed;
+}
+.link {
+    color: #00ff90;
+}
+.link:focus {
+    color: #00aa70;
+}
+.input {
+    font-size: 14px;
+    height: 20px;
+    color: #000000;
+    transition: filter 50ms linear;
+}
+.input:disabled {
+    filter: grayscale(100%);
+    cursor: not-allowed;
+}
+.slider {
+    margin: 2px 0px;
+    width: calc(100% - 4px);
+    height: 10px;
+    line-height: 100%;
+    background-color: #999999;
+    appearance: none;
+    border: var(--border-light);
+}
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background-color: var(--font-color);
+    cursor: grab;
+}
+.slider::-webkit-slider-thumb:active {
+    cursor: grabbing;
+}
+.toggle {
+    position: relative;
+    display: inline-block;
+    margin: 2px 0px;
+    width: 40px;
+    height: 16px;
+    line-height: 100%;
+}
+.toggleInput {
+    width: 0px;
+    height: 0px;
+    opacity: 0;
+}
+.toggleSlider {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 40px;
+    height: 16px;
+    background-color: #ee0000;
+    /* outline: 2px solid black; */
+    transition: background-color 100ms linear;
+    cursor: pointer;
+}
+.toggleSlider::before {
+    position: absolute;
+    content: "";
+    left: 0px;
+    top: -2px;
+    width: 20px;
+    height: 20px;
+    background-color: white;
+    /* outline: 2px solid black; */
+    transition: transform 100ms linear;
+}
+.toggleInput:checked + .toggleSlider {
+    background-color: #00aa00;
+}
+.toggleInput:checked + .toggleSlider::before {
+    transform: translateX(20px);
+}
+.colorSelect {
+    padding: 0px;
+    width: 50px;
+    background-color: var(--color-light);
+    border: none;
+    cursor: pointer;
+}
+.fadeable {
+    cursor: var(--cursor);
+    opacity: 1;
+    transition: 0.1s linear opacity;
+}
+.fadeable:hover {
+    opacity: 0.7 !important;
+}
+
+@keyframes fun {
+    0% {
+        color: #ff0000;
+    }
+    50% {
+        color: #ff9900;
+    }
+    100% {
+        color: #ff0000;
+    }
+}

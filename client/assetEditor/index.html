@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Asset Editor - Meadow Guarder</title>
+        <meta charset="utf-8">
+        <meta name="title" content="Meadow Guarder">
+        <meta name="description" content="Meadow Guarder Asset Editor - Asset Editor for Meadow Guarder">
+        <meta name="url" content="https://meadowguarder.maitiansha1.repl.co/">
+        <meta name="image" content="https://meadowguarder.maitiansha1.repl.co/img/assets/bannerSmall.png">
+        <link rel="icon" href="./../images/menu/favicon.png" type="image/x-icon">
+        <script src="./../socket.io/socket.io.js"></script>
+        <script>const socket = io(); io = null; socket.connect = socket.disconnect;</script>
+        <script src="./assetEditor.js" defer></script>
+        <link rel="stylesheet" href="./assetEditor.css">
+    </head>
+    <body>
+        <div id="main">
+            <div id="assets">
+                <div id="assetList"></div>
+                <div id="addAsset">+ Add <span id="addAssetName"></span> +</div>
+            </div>
+            <div id="editor">
+                <div id="header">
+                    <label for="assetId">Id:</label>
+                    <input id="assetId" type="text" autocomplete="off" autocapitalize="off">
+                    <label for="assetName">Name:</label>
+                    <input id="assetName" type="text" autocomplete="off" autocapitalize="off">
+                </div>
+                <div id="body">
+                    <div id="canvasEditor">
+                        <div id="canvasEditorLeft">
+                            <div id="mapSettings">
+                                <span>Mode:</span>
+                                <select id="mapBrushMode">
+                                    <option value="0">Tiles</option>
+                                    <option value="1">Terrains</option>
+                                    <option value="2">Objects</option>
+                                </select>
+                                <span>Tool:</span>
+                                <select id="mapBrushTool">
+                                    <option value="0">Brush</option>
+                                    <option value="1">Line</option>
+                                    <option value="2">Rect</option>
+                                    <option value="3">Fill</option>
+                                </select>
+                            </div>
+                            <canvas id="canvas"></canvas>
+                            <div id="pixelArtFrames">
+                                <button class="pixelArtFrame">1</button>
+                                <button class="pixelArtFrame">2</button>
+                                <button class="pixelArtFrame">3</button>
+                                <button class="pixelArtFrame">4</button>
+                                <button class="pixelArtFrame">5</button>
+                            </div>
+                        </div>
+                        <div id="canvasEditorRight">
+                            <div id="playerProperties" class="property">
+                                <b>Properties:</b>
+                            </div>
+                            <div id="pixelArtPaletteContainer" class="property">
+                                <b>Palette:</b>
+                                <div id="pixelArtPalette"></div>
+                            </div>
+                            <div id="pixelArtProperties" class="property">
+                                <b>Properties:</b>
+                            </div>
+                            <div id="mapLayersContainer" class="property">
+                                <b>Layers:</b>
+                                <div id="mapLayers"></div>
+                            </div>
+                            <div id="mapTilesContainer" class="property">
+                                <b>Tiles:</b>
+                                <div id="mapTiles"></div>
+                                <canvas id="tilesCanvas"></canvas>
+                            </div>
+                            <div id="mapTerrainsContainer" class="property">
+                                <b>Terrains:</b>
+                                <div id="mapTerrains"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="propertyEditor">
+                        <div id="descriptionProperties" class="property">
+                            <label for="description"><b>Description:</b></label>
+                            <textarea id="description"></textarea>
+                        </div>
+                        <div id="itemProperties" class="property">
+                            <b>Description:</b>
+                            <input id="descriptionItem" type="text">
+                        </div>
+                        <div id="mapProperties" class="property">
+                            <b>Properties:</b>
+                            <label for="mapRandomInput">
+                                Random:
+                                <label class="toggle">
+                                    <input id="mapRandomInput" class="toggleInput" type="checkbox">
+                                    <span class="toggleSlider"></span>
+                                </label>
+                            </label>
+                            <label for="mapGridInput">
+                                Grid:
+                                <label class="toggle">
+                                    <input id="mapGridInput" class="toggleInput" type="checkbox" checked>
+                                    <span class="toggleSlider"></span>
+                                </label>
+                            </label>
+                            <label for="mapHighlightLayerInput">
+                                Highlight Layer:
+                                <label class="toggle">
+                                    <input id="mapHighlightLayerInput" class="toggleInput" type="checkbox">
+                                    <span class="toggleSlider"></span>
+                                </label>
+                            </label>
+                            <label for="mapHillHeightInput">Hill Height:</label>
+                            <input id="mapHillHeightInput" type="number" min="1" step="1" value="1">
+                            <label for="mapShowObjectsInput">
+                                Show Objects:
+                                <label class="toggle">
+                                    <input id="mapShowObjectsInput" class="toggleInput" type="checkbox" checked>
+                                    <span class="toggleSlider"></span>
+                                </label>
+                            </label>
+                            <label for="mapDarkness">Darkness:</label>
+                            <input id="mapDarkness" type="number" min="0" max="1" step="0.1" value="0">
+                        </div>
+                        <div id="mapObjectsContainer" class="property">
+                            <b>Objects:</b>
+                            <label for="mapObjectLayerInput">Object Layer:</label>
+                            <input id="mapObjectLayerInput" type="number" min="0" step="1" value="0">
+                            <label for="mapObjects">Object:</label>
+                            <select id="mapObjects">
+                                <option value="0">Collision</option>
+                                <option value="1">Projectile Collision</option>
+                                <option value="2">Slowdown</option>
+                                <option value="3">Slope</option> // layer
+                                <option value="4">Teleporter</option> // map, x, y
+                                <option value="5">Region</option> // id
+                                <option value="6">Npc</option> // id
+                                <option value="7">Spawner</option> // monster types
+                                <option value="8">Light</option> // type
+                                <option value="9">Particle Generator</option> // type
+                            </select>
+                            <label id="mapCollisionsLabel" for="mapCollisions">Collision:</label>
+                            <select id="mapCollisions">
+                                <option value="0">Square</option>
+                                <option value="4278">Vertical</option>
+                                <option value="4364">Left Vertical</option>
+                                <option value="4365">Right Vertical</option>
+                                <option value="4366">Center Vertical</option>
+                                <option value="4279">Ladder</option>
+                                <option value="4281">Lower Small Rock</option>
+                                <option value="4367">Upper Small Rock</option>
+                                <option value="4282">Lower Large Rock</option>
+                                <option value="4368">Upper Large Rock</option>
+                                <option value="4283">Lower Small Sagebrush</option>
+                                <option value="4369">Upper Small Sagebrush</option>
+                                <option value="4280">Lower Large Sagebrush</option>
+                                <option value="4284">Upper Large Sagebrush 1</option>
+                                <option value="4370">Upper Large Sagebrush 2</option>
+                            </select>
+                            <label id="mapObjectsXLabel" for="mapObjectsX">X:</label>
+                            <input id="mapObjectsX" type="text">
+                            <label id="mapObjectsYLabel" for="mapObjectsY">Y:</label>
+                            <input id="mapObjectsY" type="text">
+                            <label id="mapObjectsLayerLabel" for="mapObjectsLayer">Layer:</label>
+                            <input id="mapObjectsLayer" type="text">
+                            <label id="mapObjectsMapLabel" for="mapObjectsMap">Map:</label>
+                            <input id="mapObjectsMap" type="text">
+                            <label id="mapObjectsIdLabel" for="mapObjectsId">Id:</label>
+                            <input id="mapObjectsId" type="text">
+                            <label id="mapObjectsMonstersLabel" for="mapObjectsMonsters">Monsters:</label>
+                            <input id="mapObjectsMonsters" type="text">
+                            <label id="mapObjectsTypeLabel" for="mapObjectsType">Type:</label>
+                            <input id="mapObjectsType" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="selector">
+            <button class="selectorButton">Npcs</button>
+            <button class="selectorButton">Dialogues</button>
+            <button class="selectorButton">Quests</button>
+            <button class="selectorButton">Waypoints</button>
+            <button class="selectorButton">Items</button>
+            <button class="selectorButton">Monsters</button>
+            <button class="selectorButton">Projectiles</button>
+            <button class="selectorButton">Maps</button>
+        </div>
+    </body>
+</html>
