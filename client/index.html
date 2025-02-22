@@ -5,11 +5,13 @@
         <meta charset="utf-8">
         <meta name="title" content="Meadow Guarder">
         <meta name="description" content="omg madow garuder confirmed">
-        <meta name="url" content="https://meadowguarder.maitiansha1.repl.co/">
-        <meta name="image" content="https://meadowguarder.maitiansha1.repl.co/images/menu/bannerSmall.png">
+        <meta name="url" content="https://meadowguarder.web.app/">
+        <meta name="image" content="https://meadowguarder.web.app/images/menu/bannerSmall.png">
         <link rel="icon" href="./images/menu/favicon.png" type="image/x-icon">
-        <script src="./socket.io/socket.io.js"></script>
-        <script>const socket = io({ maxHttpBufferSize: 1e8 }); io = null; socket.connect = socket.disconnect;</script>
+        <!-- <script src="./socket.io/socket.io.js"></script> -->
+        <script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+        <script>const socket = io.connect("https://gulizi.dyndns.org:3000/", { maxHttpBufferSize: 1e8 }); io = null; socket.connect = socket.disconnect;</script>
+        <!-- <script>const socket = io({ maxHttpBufferSize: 1e8 }); io = null; socket.connect = socket.disconnect;</script> -->
         <script src="./data/constants.js"></script>
         <script src="./js/loader.js" defer></script>
         <script src="./js/game.js" defer></script>

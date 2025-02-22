@@ -2,7 +2,7 @@
     {
         "id": "arrow",
         "width": 52,
-        "height": 12,
+        "height": 52,
         "image": "arrow",
         "imageWidth": 13,
         "imageHeight": 3,
@@ -25,7 +25,77 @@
         "offsetPosition": true,
         "collision": true,
         "stickToCollision": true,
-        "stickToCollisionTime": 60000
+        "stickToCollisionTime": 60000,
+        "angleInterpolation": true
+    },
+    {
+        "id": "sword",
+        "width": 64,
+        "height": 64,
+        "image": "sword",
+        "imageWidth": 16,
+        "imageHeight": 16,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 4,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 1,
+        "speed": 40,
+        "range": 40,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> was shot by <name2>.", "<name1> was sniped by <name2>."],
+        "offsetPosition": false,
+        "pattern": {
+            "type": "swing",
+            "data": {
+                "angle": 90,
+                "offsetX": 32,
+                "offsetY": 32,
+                "offsetAngle": 45
+            }
+        },
+        "collision": false,
+        "angleInterpolation": true
+    },
+    {
+        "id": "tree",
+        "width": 60,
+        "height": 20,
+        "image": "tree",
+        "imageWidth": 15,
+        "imageHeight": 5,
+        "imageOffsetX": 0,
+        "imageOffsetY": 0,
+        "imageScale": 4,
+        "animationLength": 1,
+        "animationSpeed": 0,
+        "animationChangeBySpeed": false,
+        "animationPhases": 1,
+        "damage": 1,
+        "speed": 40,
+        "range": 40,
+        "knockback": 0.5,
+        "pierce": 0,
+        "critChance": 0,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "deathMessages": ["<name1> was shot by <name2>.", "<name1> was sniped by <name2>."],
+        "offsetPosition": true,
+        "pattern": {
+            "type": "homingWeak",
+            "data": {
+                "speed": 25
+            }
+        },
+        "collision": false,
+        "angleInterpolation": true
     },
     {
         "id": "explosiveArrow",

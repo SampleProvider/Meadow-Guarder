@@ -1,10 +1,14 @@
-var inChat = false;
-var chatMessages = [];
+let inChat = false;
+let chatMessages = [];
 const chat = document.getElementById("chat");
 const chatInput = document.getElementById("chatInput");
 chatInput.addEventListener("focus", function() {
     inChat = true;
-    socket.emit("controls", RELEASE);
+    for (let i in clientPlayer.controls) {
+        if (typeof clientPlayer.controls[i] == "boolean") {
+            clientPlayer.controls[i] = false;
+        }
+    }
 });
 chatInput.addEventListener("blur", function() {
     inChat = false;
@@ -17,7 +21,7 @@ chatInput.addEventListener("keydown", function(event) {
         }
     }
 });
-var insertChat = function(text, color) {
+let insertChat = function(text, color) {
     switch (color) {
         case "text":
             color = "color: #000000;";
@@ -47,15 +51,15 @@ var insertChat = function(text, color) {
             color = "animation: fun 2s linear infinite;";
             break;
     }
-    var date = new Date();
-    var minute = date.getMinutes().toString();
+    let date = new Date();
+    let minute = date.getMinutes().toString();
     if (minute.length == 1){
         minute = "0" + minute;
     }
     const message = document.createElement("div");
     message.className = "chatText";
     message.innerHTML = "[" + date.getHours() + ":" + minute + "] <span style=\"" + color + "\">" + text + "</span>";
-    var scroll = false;
+    let scroll = false;
     if (chat.scrollTop + chat.clientHeight >= chat.scrollHeight - 5) {
         scroll = true;
     }
@@ -76,15 +80,19 @@ socket.on("chat", function(data) {
     insertChat(data.text, data.color);
 });
 
-var inDebug = false;
-var debugMessages = [];
-var debugHistory = [];
-var debugHistoryIndex = 0;
+let inDebug = false;
+let debugMessages = [];
+let debugHistory = [];
+let debugHistoryIndex = 0;
 const debugConsole = document.getElementById("debugConsole");
 const debugConsoleInput = document.getElementById("debugConsoleInput");
 debugConsoleInput.addEventListener("focus", function() {
     inDebug = true;
-    socket.emit("controls", RELEASE);
+    for (let i in clientPlayer.controls) {
+        if (typeof clientPlayer.controls[i] == "boolean") {
+            clientPlayer.controls[i] = false;
+        }
+    }
 });
 debugConsoleInput.addEventListener("blur", function() {
     inDebug = false;
@@ -102,7 +110,7 @@ debugConsoleInput.addEventListener("keydown", function(event) {
         }
     }
 });
-var insertDebugConsole = function(text, color) {
+let insertDebugConsole = function(text, color) {
     switch (color) {
         case "success":
             color = "color: #00ff00;";
@@ -114,15 +122,15 @@ var insertDebugConsole = function(text, color) {
             color = "color: #ff0000; font-weight: bold;";
             break;
     }
-    var date = new Date();
-    var minute = date.getMinutes().toString();
+    let date = new Date();
+    let minute = date.getMinutes().toString();
     if (minute.length == 1){
         minute = "0" + minute;
     }
     const message = document.createElement("div");
     message.className = "debugConsoleText";
     message.innerHTML = "[" + date.getHours() + ":" + minute + "] <span style=\"" + color + "\">" + text + "</span>";
-    var scroll = false;
+    let scroll = false;
     if (debugConsole.scrollTop + debugConsole.clientHeight >= debugConsole.scrollHeight - 5) {
         scroll = true;
     }

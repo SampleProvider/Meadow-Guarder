@@ -12,7 +12,7 @@ const tooltipDescription = document.getElementById("tooltipDescription");
 
 const draggingItem = document.getElementById("draggingItem");
 
-var Inventory = {
+let Inventory = {
     items: [],
     itemDivs: [],
     selectedItem: 0,
@@ -24,7 +24,7 @@ var Inventory = {
         enchantments: {},
     },
     createItems: function() {
-        for (var i = inventoryTab.children.length - 1; i >= 0; i++) {
+        for (let i = inventoryTab.children.length - 1; i >= 0; i++) {
             if (i < this.maxItems) {
                 break;
             }
@@ -82,6 +82,9 @@ var Inventory = {
             if (i < 5) {
                 const item = document.createElement("div");
                 item.classList.add("item");
+                if (i == this.selectedItem) {
+                    item.classList.add("itemSelected");
+                }
                 item.addEventListener("mouseover", function() {
                     Inventory.hoveredItem = i;
                     if (Inventory.items[i] != ITEM_NULL) {
@@ -98,24 +101,31 @@ var Inventory = {
                     }
                 });
                 item.addEventListener("click", function() {
-                    Inventory.clickItem(i, 0);
-                    if (Inventory.items[i] != ITEM_NULL) {
-                        Inventory.showTooltip(Inventory.items[i]);
-                        Inventory.moveTooltip();
-                    }
-                    else {
-                        Inventory.hideTooltip();
-                    }
+                    hotbar.children[Inventory.selectedItem].classList.remove("itemSelected");
+                    // Inventory.clickItem(i, 0);
+                    // if (Inventory.items[i] != ITEM_NULL) {
+                    //     Inventory.showTooltip(Inventory.items[i]);
+                    //     Inventory.moveTooltip();
+                    // }
+                    // else {
+                    //     Inventory.hideTooltip();
+                    // }
+                    Inventory.selectedItem = i;
+                    hotbar.children[Inventory.selectedItem].classList.add("itemSelected");
+                    socket.emit("item", {
+                        action: ITEM_SELECT,
+                        index: i,
+                    });
                 });
                 item.addEventListener("contextmenu", function() {
-                    Inventory.clickItem(i, 2);
-                    if (Inventory.items[i] != ITEM_NULL) {
-                        Inventory.showTooltip(Inventory.items[i]);
-                        Inventory.moveTooltip();
-                    }
-                    else {
-                        Inventory.hideTooltip();
-                    }
+                    // Inventory.clickItem(i, 2);
+                    // if (Inventory.items[i] != ITEM_NULL) {
+                    //     Inventory.showTooltip(Inventory.items[i]);
+                    //     Inventory.moveTooltip();
+                    // }
+                    // else {
+                    //     Inventory.hideTooltip();
+                    // }
                 });
                 const cooldown = document.createElement("div");
                 cooldown.classList.add("itemCooldown");
@@ -266,8 +276,8 @@ var Inventory = {
         // remove .children calls
         // also probably fix the hotbar spaghetti
         console.log(this.items[index], this.data.items)
-        var stackSize = this.items[index] == ITEM_NULL ? 0 : this.items[index].stackSize;
-        var item = index == EQUIP_DRAGGING ? draggingItem : index < 0 ? equipTab.children[-index] : inventoryTab.children[index + 1];
+        let stackSize = this.items[index] == ITEM_NULL ? 0 : this.items[index].stackSize;
+        let item = index == EQUIP_DRAGGING ? draggingItem : index < 0 ? equipTab.children[-index] : inventoryTab.children[index + 1];
         if (stackSize == 0) {
             if (index == EQUIP_DRAGGING) {
                 this.hideDraggingItem();
@@ -292,6 +302,7 @@ var Inventory = {
             item.style.backgroundImage = "url(./images/item/" + this.data.items[this.items[index].id].image + ".png)";
             item.children[0].style.transition = "unset";
             item.children[0].style.height = this.data.items[this.items[index].id].cooldown == 0 ? "0%" : this.items[index].cooldown / this.data.items[this.items[index].id].cooldown * 100 + "%";
+            item.children[0].style.height = "100%";
             item.children[0].offsetHeight;
             item.children[0].style.transition = "height " + this.items[index].cooldown * 50 + "ms linear";
             item.children[0].style.height = "0%";
@@ -306,6 +317,7 @@ var Inventory = {
                 item.style.backgroundImage = "url(./images/item/" + this.data.items[this.items[index].id].image + ".png)";
                 item.children[0].style.transition = "unset";
                 item.children[0].style.height = this.data.items[this.items[index].id].cooldown == 0 ? "0%" : this.items[index].cooldown / this.data.items[this.items[index].id].cooldown * 100 + "%";
+                item.children[0].style.height = "100%";
                 item.children[0].offsetHeight;
                 item.children[0].style.transition = "height " + this.items[index].cooldown * 50 + "ms linear";
                 item.children[0].style.height = "0%";
@@ -320,11 +332,11 @@ var Inventory = {
     },
     clickItem: function(index, button) {
         if (this.items[EQUIP_DRAGGING] == ITEM_NULL) {
-            var item = this.items[index];
+            let item = this.items[index];
             if (item == ITEM_NULL) {
                 return;
             }
-            var stackSize = button == 0 ? item.stackSize : Math.ceil(item.stackSize / 2);
+            let stackSize = button == 0 ? item.stackSize : Math.ceil(item.stackSize / 2);
             this.items[EQUIP_DRAGGING] = {
                 id: item.id,
                 enchantments: item.enchantments,
@@ -344,8 +356,8 @@ var Inventory = {
             });
         }
         else {
-            var draggingItem = this.items[EQUIP_DRAGGING];
-            var item = this.items[index];
+            let draggingItem = this.items[EQUIP_DRAGGING];
+            let item = this.items[index];
             if (index < 0 && ((index >= EQUIP_CRYSTAL && this.data.items[draggingItem.id].equip != index) || (index <= EQUIP_ACCESSORY_1 && index >= EQUIP_ACCESSORY_2 && this.data.items[draggingItem.id].equip != EQUIP_ACCESSORY_1))) {
                 return;
             }
@@ -387,8 +399,8 @@ var Inventory = {
                 });
             }
             else {
-                // var stackSize = button == 0 ? draggingItem.stackSize : Math.ceil(draggingItem.stackSize / 2);
-                var stackSize = button == 0 ? draggingItem.stackSize : 1;
+                // let stackSize = button == 0 ? draggingItem.stackSize : Math.ceil(draggingItem.stackSize / 2);
+                let stackSize = button == 0 ? draggingItem.stackSize : 1;
                 draggingItem.stackSize -= stackSize;
                 item.stackSize += stackSize;
                 if (item.stackSize > this.data.items[item.id].maxStackSize) {
@@ -409,7 +421,7 @@ var Inventory = {
         }
     },
     dropItem: function(index, button) {
-        var stackSize = button == 0 ? Inventory.items[index].stackSize : 1;
+        let stackSize = button == 0 ? Inventory.items[index].stackSize : 1;
         Inventory.items[index].stackSize -= stackSize;
         if (Inventory.items[index].stackSize == 0) {
             Inventory.items[index] = ITEM_NULL;
@@ -422,9 +434,9 @@ var Inventory = {
         });
     },
     refreshCraft: function(index) {
-        var craft = craftTab.children[index + 1];
-        var canCraft = true;
-        for (var i = 0; i < this.data.crafts[index].materials.length; i++) {
+        let craft = craftTab.children[index + 1];
+        let canCraft = true;
+        for (let i = 0; i < this.data.crafts[index].materials.length; i++) {
             if (!this.hasItem(this.data.crafts[index].materials[i].id, [], this.data.crafts[index].materials[i].stackSize)) {
                 canCraft = false;
                 craft.children[0].children[i].disabled = true;
@@ -436,12 +448,12 @@ var Inventory = {
         craft.disabled = false;
     },
     clickCraft: function(index, button) {
-        var stackSize = 1;
-        var craft = this.data.crafts[index];
-        for (var i = 0; i < craft.materials.length; i++) {
+        let stackSize = 1;
+        let craft = this.data.crafts[index];
+        for (let i = 0; i < craft.materials.length; i++) {
             this.removeItem(craft.materials[i].id, [], craft.materials[i].stackSize);
         }
-        var draggingItem = this.items[EQUIP_DRAGGING];
+        let draggingItem = this.items[EQUIP_DRAGGING];
         if (draggingItem == ITEM_NULL) {
             this.items[EQUIP_DRAGGING] = {
                 id: craft.id,
@@ -461,7 +473,7 @@ var Inventory = {
     },
     showTooltip: function(item, materials) {
         tooltip.style.opacity = 1;
-        var title = this.data.items[item.id].name;
+        let title = this.data.items[item.id].name;
         if (item.stackSize != 1) {
             title += " x" + item.stackSize;
         }
@@ -488,22 +500,22 @@ var Inventory = {
         // tooltipTitle.style.color = titleColor;
         // tooltipSubtitle.style.color = titleColor;
         tooltipSubtitle.style.color = "yellow";
-        var subtitle = this.getEquipName(this.data.items[item.id].equip);
-        var description = this.data.items[item.id].description;
-        var descriptionPositive = "";
-        var descriptionNegative = "";
-        for (var i in this.data.items[item.id].effects) {
-            var type = this.data.items[item.id].effects[i].type;
-            var id = this.data.items[item.id].effects[i].id;
-            var value = this.data.items[item.id].effects[i].value;
-            var effect = null;
+        let subtitle = this.getEquipName(this.data.items[item.id].equip);
+        let description = this.data.items[item.id].description;
+        let descriptionPositive = "";
+        let descriptionNegative = "";
+        for (let i in this.data.items[item.id].effects) {
+            let type = this.data.items[item.id].effects[i].type;
+            let id = this.data.items[item.id].effects[i].id;
+            let value = this.data.items[item.id].effects[i].value;
+            let effect = null;
             switch (id) {
                 case "projectileAccuracy":
                     effect = "° projectile inaccuracy";
                 default:
                     if (effect == null) {
                         effect = " ";
-                        for (var j in id) {
+                        for (let j in id) {
                             if (id[j] == id[j].toUpperCase()) {
                                 effect += " ";
                             }
@@ -521,8 +533,8 @@ var Inventory = {
                 effect = effect.replaceAll(" crit", " critical");
             }
             effect = value + effect;
-            var positive = null;
-            var flipped = id == "hpRegenSpeed" || id == "manaRegenSpeed" || id == "projectileAccuracy";
+            let positive = null;
+            let flipped = id == "hpRegenSpeed" || id == "manaRegenSpeed" || id == "projectileAccuracy";
             switch (type) {
                 case EFFECT_BASE:
                     positive = true;
@@ -556,12 +568,12 @@ var Inventory = {
             }
         }
         if (descriptionPositive.length > 0 || descriptionNegative.length > 0) {
-            description += "<br><div style=\"color: var(--font-color-success)\">" + descriptionPositive + "</div><div style=\"color: var(--font-color-error)\">" + descriptionNegative + "</div>";
+            description += "<br><div style=\"color: let(--font-color-success)\">" + descriptionPositive + "</div><div style=\"color: let(--font-color-error)\">" + descriptionNegative + "</div>";
         }
         if (materials != null) {
-            var descriptionMaterials = "<br>";
-            for (var i = 0; i < materials.length; i++) {
-                var color = "";
+            let descriptionMaterials = "<br>";
+            for (let i = 0; i < materials.length; i++) {
+                let color = "";
                 switch (this.data.items[materials[i].id].rarity) {
                     case 0:
                         color = "white";
@@ -598,7 +610,7 @@ var Inventory = {
         tooltip.style.right = "unset";
         tooltip.style.top = rawMouseY + "px";
         tooltip.style.bottom = "unset";
-        var rect = tooltip.getBoundingClientRect();
+        let rect = tooltip.getBoundingClientRect();
         if (rect.right > window.innerWidth) {
             tooltip.style.right = (window.innerWidth - rawMouseX) + "px";
             tooltip.style.left = "unset";
@@ -664,14 +676,13 @@ var Inventory = {
         return "";
     },
     update: function(items) {
-        for (var i in items) {
-            var index = Number(i);
+        for (let i in items) {
+            let index = Number(i);
             // if (index >= this.maxItems) {
             //     this.maxItems = index + 1;
             //     this.createItems();
             // }
-            console.log(this.items[index])
-            if (!this.isSameItem(this.items[index], items[i].id, items[i].enchantments) || this.items[index].stackSize != items[i].stackSize) {
+            // if (!this.isSameItem(this.items[index], items[i].id, items[i].enchantments) || this.items[index].stackSize != items[i].stackSize || this.items[index].cooldown != items[i].cooldown) {
                 this.items[index] = items[i];
                 if (index >= 0) {
                     this.refreshItem(index);
@@ -679,19 +690,19 @@ var Inventory = {
                 else {
                     this.refreshEquip(index);
                 }
-            }
+            // }
         }
     },
     isSameItem: function(item, id, enchantments) {
         if (item == ITEM_NULL || item.id != id) {
             return false;
         }
-        for (var i in item.enchantments) {
+        for (let i in item.enchantments) {
             if (item.enchantments[i] != enchantments) {
                 return false;
             }
         }
-        for (var i in enchantments) {
+        for (let i in enchantments) {
             if (item.enchantments[i] != enchantments) {
                 return false;
             }
@@ -699,7 +710,7 @@ var Inventory = {
         return true;
     },
     hasItem: function(id, enchantments, stackSize) {
-        for (var i in this.items) {
+        for (let i in this.items) {
             if (this.isSameItem(this.items[i], id, enchantments)) {
                 stackSize -= this.items[i].stackSize;
                 if (stackSize <= 0) {
@@ -710,9 +721,9 @@ var Inventory = {
         return false;
     },
     removeItem: function(id, enchantments, stackSize) {
-        for (var i in this.items) {
+        for (let i in this.items) {
             if (this.isSameItem(this.items[i], id, enchantments)) {
-                var min = Math.min(stackSize, this.items[i].stackSize);
+                let min = Math.min(stackSize, this.items[i].stackSize);
                 stackSize -= min;
                 this.items[i].stackSize -= min;
                 if (this.items[i].stackSize == 0) {
@@ -739,5 +750,8 @@ Inventory.items[EQUIP_DRAGGING] = ITEM_NULL;
 // additem, removeitem
 
 socket.on("updateInventory", function(data) {
-    // Inventory.update(data);
+    // if (selfPlayer == null) {
+    //     return;
+    // }
+    Inventory.update(data);
 });

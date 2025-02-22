@@ -3,8 +3,9 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -16,27 +17,98 @@
                 "y": 30.625
             }
         },
-        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx": {
-            "scale": 5.5,
-            "selectedLayer": 27,
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/Preview.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 5,
             "viewCenter": {
-                "x": 1953.5454545454545,
-                "y": 375
+                "x": 263,
+                "y": 1044.3333333333333
+            }
+        },
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/The Meadow.tmx": {
+            "scale": 6.071093749999999,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 64.15647921760392,
+                "y": 64.15647921760393
+            }
+        },
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/test.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": -55.5,
+                "y": -23.5
+            }
+        },
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/tileset.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/walls.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/gbsha/Documents/Meadow Guarder/1.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 0.125
+        },
+        "C:/Users/gbsha/Documents/Pixel Simulator 2/test.tmx": {
+            "scale": 1.0353515625,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 0.4829277494812345,
+                "y": 0.4829277494812345
+            }
+        },
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/Outpost Cottage 1.tmx": {
+            "scale": 2,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 98.25,
+                "y": 100.25
+            }
+        },
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/Outpost Cottage 2.tmx": {
+            "scale": 2,
+            "selectedLayer": 5,
+            "viewCenter": {
+                "x": 147.25,
+                "y": 74.75
+            }
+        },
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx": {
+            "scale": 0.33,
+            "selectedLayer": 9,
+            "viewCenter": {
+                "x": 610.6060606060605,
+                "y": 113.63636363636374
             }
         },
         "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/tiles.tsx": {
+            "dynamicWrapping": false,
             "scaleInDock": 1
         },
+        "World.tmx": {
+            "scale": 2,
+            "selectedLayer": 15,
+            "viewCenter": {
+                "x": -1.25,
+                "y": 3.25
+            }
+        },
+        "tileset.json": {
+            "scaleInDock": 0.33,
+            "scaleInEditor": 1
+        },
         "tileset.tsx": {
-            "scaleInDock": 0.5,
+            "scaleInDock": 2,
             "scaleInEditor": 11
         },
         "untitled.tmx": {
             "scale": 1.5,
             "selectedLayer": 2,
             "viewCenter": {
-                "x": -17,
-                "y": 228.33333333333334
+                "x": -11.666666666666686,
+                "y": 29
             }
         }
     },
@@ -50,13 +122,25 @@
     "map.tileHeight": 16,
     "map.tileWidth": 16,
     "openFiles": [
+        "World.tmx",
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx",
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/Outpost Cottage 1.tmx",
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/Outpost Cottage 2.tmx",
+        "tileset.tsx"
     ],
     "project": "Meadow-Guarder.tiled-project",
     "property.type": "bool",
     "recentFiles": [
-        "untitled.tmx",
+        "World.tmx",
         "tileset.tsx",
-        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx"
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/Outpost Cottage 2.tmx",
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/Outpost Cottage 1.tmx",
+        "C:/Users/gbsha/Downloads/Mountain_Guarder-master/Mountain_Guarder-master/client/maps/World.tmx",
+        "tileset.json",
+        "C:/Users/gbsha/Documents/Pixel Simulator 2/test.tmx",
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/The Meadow.tmx",
+        "C:/Users/gbsha/Documents/Github/Meadow-Guarder - Copy/client - Copy/maps/test.tmx",
+        "untitled.tmx"
     ],
     "tileset.lastUsedFormat": "tsx",
     "tileset.spacing": 1,

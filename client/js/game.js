@@ -1,17 +1,19 @@
-var cameraX = 0;
-var cameraY = 0;
-var cameraShakeMagnitude = 0;
-var cameraShakeDecay = 0;
+let cameraX = 0;
+let cameraY = 0;
+let cameraShakeMagnitude = 0;
+let cameraShakeDecay = 0;
 
-var rawMouseX = 0;
-var rawMouseY = 0;
-var mouseX = 0;
-var mouseY = 0;
-var selectedDroppedItem = null;
-var selfPlayer = null;
-var selfMap = null;
+let rawMouseX = 0;
+let rawMouseY = 0;
+let mouseX = 0;
+let mouseY = 0;
+let selectedDroppedItem = null;
+let selfPlayer = null;
+let selfMap = null;
 
-var fpsTimes = [];
+let interpolationSteps = 3;
+
+let fpsTimes = [];
 let ping = 0;
 let pingTimes = [];
 let pingTimesTotal = 0;
@@ -41,9 +43,14 @@ const particleEntityCount = document.getElementById("particleEntityCount");
 setInterval(function() {
     fpsDisplay.innerText = "FPS: " + fpsTimes.length;
     let n = performance.now();
-    // setTimeout(function() {
-    socket.volatile.emit("ping", n);
-    // }, 1000);
+    if (TEST_PING == 0) {
+        socket.volatile.emit("ping", n);
+    }
+    else {
+        setTimeout(function() {
+            socket.volatile.emit("ping", n);
+        }, TEST_PING);
+    }
 }, 500);
 
 socket.on("ping", function(data) {
@@ -55,13 +62,18 @@ socket.on("ping", function(data) {
     }
     ping = pingTimesTotal / pingTimes.length;
     pingDisplay.innerText = "Ping: " + Math.round(ping * 100) / 100 + "ms";
-    // setTimeout(function() {
-    socket.emit("ping2", ping);
-    // }, 1000);
+    if (TEST_PING == 0) {
+        socket.emit("ping2", ping);
+    }
+    else {
+        setTimeout(function() {
+            socket.emit("ping2", ping);
+        }, TEST_PING);
+    }
 });
 
-var updateTime = performance.now();
-var update = function() {
+let updateTime = performance.now();
+let update = function() {
     updateTime += 1000 / settings.fps;
     if (updateTime < performance.now() - 100) {
         updateTime = performance.now();
@@ -74,24 +86,24 @@ var update = function() {
     if (settings.debug) {
         mousePosition.innerText = "(" + Math.floor((mouseX - cameraX) / TILE_SIZE) + ", " + Math.floor((mouseY - cameraY) / TILE_SIZE) + ")";
     }
-    var totalStart = performance.now();
-    var entityStart = performance.now();
-    for (var i in Entity.list) {
+    let totalStart = performance.now();
+    let entityStart = performance.now();
+    for (let i in Entity.list) {
         if (Entity.list[i].type == PROJECTILE) {
             Projectile.update(Entity.list[i]);
         }
         Entity.update(Entity.list[i]);
     }
     if (settings.particles) {
-        for (var i in ParticleGenerator.list[selfMap]) {
+        for (let i in ParticleGenerator.list[selfMap]) {
             ParticleGenerator.update(ParticleGenerator.list[selfMap][i]);
         }
     }
     
-    var entityEnd = performance.now();
+    let entityEnd = performance.now();
 
-    var cameraShakeX = 0;
-    var cameraShakeY = 0;
+    let cameraShakeX = 0;
+    let cameraShakeY = 0;
     if (settings.cameraShake && cameraShakeMagnitude > 0) {
         cameraShakeX = Math.random() * cameraShakeMagnitude - cameraShakeMagnitude / 2;
         cameraShakeY = Math.random() * cameraShakeMagnitude - cameraShakeMagnitude / 2;
@@ -105,26 +117,40 @@ var update = function() {
     cameraX = windowWidth * devicePixelRatio / settings.zoom * 50 - Math.round(selfPlayer.x + cameraShakeX);
     cameraY = windowHeight * devicePixelRatio / settings.zoom * 50 - Math.round(selfPlayer.y + cameraShakeY);
     
-    var mapStart = performance.now();
+    clientPlayer.controls[TARGET_X] = mouseX - cameraX;
+    clientPlayer.controls[TARGET_Y] = mouseY - cameraY;
+    clientPlayer.controls[TARGET_ANGLE] = Math.atan2(mouseY - cameraY - selfPlayer.y, mouseX - cameraX - selfPlayer.x) * 180 / Math.PI;
+    if (clientPlayer.controls[TARGET_ANGLE] < 0) {
+        clientPlayer.controls[TARGET_ANGLE] += 360;
+    }
+    if (!selfPlayer.overrideHeldItem) {
+        selfPlayer.heldItem = Inventory.items[Inventory.selectedItem].id;
+        selfPlayer.heldItemAngle = clientPlayer.controls[TARGET_ANGLE];
+    }
+    if (selfPlayer.hp == 0) {
+        selfPlayer.heldItem = ITEM_NULL;
+    }
+    
+    let mapStart = performance.now();
     
     updateRenderedChunks();
 
-    var mapEnd = performance.now();
+    let mapEnd = performance.now();
 
-    var layers = [];
-    for (var y in maps[selfMap].canvases) {
-        for (var x in maps[selfMap].canvases[y]) {
-            for (var i in maps[selfMap].canvases[y][x]) {
+    let layers = [];
+    for (let y in maps[selfMap].canvases) {
+        for (let x in maps[selfMap].canvases[y]) {
+            for (let i in maps[selfMap].canvases[y][x]) {
                 layers[i] = true;
             }
         }
     }
     if (settings.animatedTiles) {
-        for (var i in AnimatedTile.list) {
+        for (let i in AnimatedTile.list) {
             layers[AnimatedTile.list[i].layer] = true;
         }
     }
-    for (var i in Entity.layers) {
+    for (let i in Entity.layers) {
         if (Entity.layers[i].length == 0) {
             delete Entity.layers[i];
         }
@@ -133,7 +159,7 @@ var update = function() {
         }
     }
     if (settings.particles) {
-        for (var i in Particle.layers) {
+        for (let i in Particle.layers) {
             if (Particle.layers[i].length == 0) {
                 delete Particle.layers[i];
             }
@@ -143,35 +169,35 @@ var update = function() {
         }
     }
     selectedDroppedItem = null;
-    for (var i in layers) {
+    for (let i in layers) {
         offscreenCtx.globalAlpha = 1;
         if (settings.debug) {
             mapStart += performance.now() - mapEnd;
         }
-        for (var y in maps[selfMap].canvases) {
-            for (var x in maps[selfMap].canvases[y]) {
+        for (let y in maps[selfMap].canvases) {
+            for (let x in maps[selfMap].canvases[y]) {
                 if (maps[selfMap].canvases[y][x][i]) {
-                    var startX = (x * CHUNK_SIZE + cameraX) / 4;
-                    var startY = (y * CHUNK_SIZE + cameraY) / 4;
-                    var endX = (x * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE + cameraX) / 4;
-                    var endY = (y * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE + cameraY) / 4;
-                    // var startX = Math.floor((x * CHUNK_SIZE) / 4);
-                    // var startY = Math.floor((y * CHUNK_SIZE) / 4);
-                    // var endX = Math.ceil((x * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE) / 4);
-                    // var endY = Math.ceil((y * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE) / 4);
-                    var croppedStartX = Math.max(startX, 0);
-                    var croppedStartY = Math.max(startY, 0);
-                    var croppedEndX = Math.min(endX, Math.ceil(offscreenCanvas.width / renderScale / 4));
-                    var croppedEndY = Math.min(endY, Math.ceil(offscreenCanvas.height / renderScale / 4));
-                    var croppedWidth = croppedEndX - croppedStartX;
-                    var croppedHeight = croppedEndY - croppedStartY;
+                    let startX = (x * CHUNK_SIZE + cameraX) / 4;
+                    let startY = (y * CHUNK_SIZE + cameraY) / 4;
+                    let endX = (x * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE + cameraX) / 4;
+                    let endY = (y * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE + cameraY) / 4;
+                    // let startX = Math.floor((x * CHUNK_SIZE) / 4);
+                    // let startY = Math.floor((y * CHUNK_SIZE) / 4);
+                    // let endX = Math.ceil((x * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE) / 4);
+                    // let endY = Math.ceil((y * CHUNK_SIZE + CHUNK_SIZE + TILE_SIZE) / 4);
+                    let croppedStartX = Math.max(startX, 0);
+                    let croppedStartY = Math.max(startY, 0);
+                    let croppedEndX = Math.min(endX, Math.ceil(offscreenCanvas.width / renderScale / 4));
+                    let croppedEndY = Math.min(endY, Math.ceil(offscreenCanvas.height / renderScale / 4));
+                    let croppedWidth = croppedEndX - croppedStartX;
+                    let croppedHeight = croppedEndY - croppedStartY;
                     offscreenCtx.drawImage(maps[selfMap].canvases[y][x][i], croppedStartX - startX, croppedStartY - startY, croppedWidth, croppedHeight, croppedStartX * 4, croppedStartY * 4, croppedWidth * 4, croppedHeight * 4);
                 }
             }
         }
-        var layer = Number(i);
+        let layer = Number(i);
         if (settings.animatedTiles) {
-            for (var j in AnimatedTile.list) {
+            for (let j in AnimatedTile.list) {
                 if (layer == AnimatedTile.list[j].layer) {
                     AnimatedTile.update(AnimatedTile.list[j]);
                 }
@@ -196,7 +222,7 @@ var update = function() {
             while (Entity.layers[layer].length > 0 && Entity.layers[layer][Entity.layers[layer].length - 1].layer != layer) {
                 Entity.layers[layer].pop();
             }
-            for (var j in Entity.layers[i]) {
+            for (let j in Entity.layers[i]) {
                 if (Entity.layers[i][j].type == PROJECTILE) {
                     Projectile.draw(Entity.layers[i][j]);
                 }
@@ -213,13 +239,13 @@ var update = function() {
                     Rig.drawBelow(Entity.layers[i][j]);
                 }
             }
-            for (var j in Entity.layers[i]) {
+            for (let j in Entity.layers[i]) {
                 if (Entity.layers[i][j].type != PROJECTILE && Entity.layers[i][j].type != DROPPED_ITEM) {
                     Rig.drawAbove(Entity.layers[i][j]);
                 }
             }
             if (settings.particles) {
-                for (var j in Particle.layers[i]) {
+                for (let j in Particle.layers[i]) {
                     Particle.update(Particle.layers[i][j]);
                 }
             }
@@ -239,22 +265,21 @@ var update = function() {
             entityEnd = performance.now();
         }
     }
-    if (settings.debug) {
-        var debugStart = performance.now();
-    }
     // draw debug
     if (settings.debug) {
+        let debugStart = performance.now();
         offscreenCtx.strokeStyle = "#000000";
         offscreenCtx.lineWidth = 1;
-        for (var y in maps[selfMap].collisions) {
-            for (var x in maps[selfMap].collisions[y]) {
-                for (let i in maps[selfMap].collisions[y][x]) {
-                    for (let j in maps[selfMap].collisions[y][x][i]) {
-                        let collision = maps[selfMap].collisions[y][x][i][j];
+        for (let i in maps[selfMap].collisions) {
+            for (let y in maps[selfMap].collisions[i]) {
+                for (let x in maps[selfMap].collisions[i][y]) {
+                    for (let j in maps[selfMap].collisions[i][y][x]) {
+                        let collision = maps[selfMap].collisions[i][y][x][j];
                         if (collision.x - collision.width / 2 + cameraX >= offscreenCanvas.width / renderScale || collision.x + collision.width / 2 + cameraX <= 0 || collision.y - collision.height / 2 + cameraY >= offscreenCanvas.height / renderScale || collision.y + collision.height / 2 + cameraY <= 0) {
                             continue;
                         }
                         offscreenCtx.strokeRect(collision.x - collision.width / 2 + cameraX, collision.y - collision.height / 2 + cameraY, collision.width, collision.height);
+                        offscreenCtx.fillText(i, collision.x + cameraX, collision.y + cameraY);
                     }
                 }
             }
@@ -286,8 +311,8 @@ var update = function() {
         }
 
 
-        var debugEnd = performance.now();
-        var totalEnd = performance.now();
+        let debugEnd = performance.now();
+        let totalEnd = performance.now();
         totalDrawTime.innerText = "Total: " + Math.round(totalEnd - totalStart) + "ms";
         entityDrawTime.innerText = "Entity: " + Math.round(entityEnd - entityStart) + "ms";
         mapDrawTime.innerText = "Map: " + Math.round(mapEnd - mapStart) + "ms";
@@ -295,10 +320,10 @@ var update = function() {
         clientHeap.innerText = "Client Heap: " + Math.round(performance.memory.usedJSHeapSize / 1048576 * 100) / 100 + "/" + Math.round(performance.memory.jsHeapSizeLimit / 1048576 * 100) / 100 + "MB";
         playerPosition.innerText = "(" + Math.floor(selfPlayer.x / TILE_SIZE) + ", " + Math.floor(selfPlayer.y / TILE_SIZE) + ")";
 
-        var monsters = 0;
-        var projectiles = 0;
-        var particles = 0;
-        for (var i in Entity.list) {
+        let monsters = 0;
+        let projectiles = 0;
+        let particles = 0;
+        for (let i in Entity.list) {
             if (Entity.list[i].type == MONSTER) {
                 monsters += 1;
             }
@@ -306,10 +331,11 @@ var update = function() {
                 projectiles += 1;
             }
         }
-        for (var i in Particle.layers) {
-            for (var j in Particle.layers[i]) {
-                particles += 1;
-            }
+        for (let i in Particle.layers) {
+            particles += Object.keys(Particle.layers[i]).length;
+            // for (let j in Particle.layers[i]) {
+            //     particles += 1;
+            // }
         }
 
         totalEntityCount.innerText = "Total: " + (monsters + projectiles + particles);
@@ -321,15 +347,15 @@ var update = function() {
     if (settings.lights) {
         offscreenLightCtx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
         offscreenLightCtx.clearRect(0, 0, offscreenLightCanvas.width / renderScale, offscreenLightCanvas.height / renderScale);
-        for (var i in Light.list[selfMap]) {
+        for (let i in Light.list[selfMap]) {
             Light.update(Light.list[selfMap][i]);
         }
         if (maps[selfMap].darkness > 0) {
             offscreenLightCtx.globalCompositeOperation = "darken";
-            for (var i in Light.list[selfMap]) {
+            for (let i in Light.list[selfMap]) {
                 Light.drawAlpha(Light.list[selfMap][i]);
             }
-            for (var i in Entity.list) {
+            for (let i in Entity.list) {
                 if (Entity.list[i].type == PLAYER) {
                     Light.drawEntityAlpha(Entity.list[i]);
                 }
@@ -341,7 +367,7 @@ var update = function() {
         if (settings.coloredLights) {
             offscreenLightCtx.globalCompositeOperation = "lighten";
             // offscreenLightCtx.globalCompositeOperation = "source-over";
-            for (var i in Light.list[selfMap]) {
+            for (let i in Light.list[selfMap]) {
                 if (Light.list[selfMap][i].colored) {
                     Light.drawColor(Light.list[selfMap][i]);
                 }
@@ -403,6 +429,7 @@ let clientPlayer = {
         this.speedX = 0;
         this.speedY = 0;
         // console.log(this.teleporting, this.teleportTime)
+        // TODO p0: teleporting with lags is borken
         if (this.teleporting) {
             this.knockbackX = 0;
             this.knockbackY = 0;
@@ -450,12 +477,12 @@ let clientPlayer = {
         this.move(true);
     },
     move: function(slide) {
-        var max = Math.ceil(Math.max(Math.abs(this.speedX) / this.width, Math.abs(this.speedY) / this.height));
+        let collided = false;
+        let max = Math.ceil(Math.max(Math.abs(this.speedX) / this.width, Math.abs(this.speedY) / this.height));
         if (max != 0) {
-            var speedX = this.speedX / max;
-            var speedY = this.speedY / max;
-            var collided = false;
-            for (var i = 0; i < max; i += 1) {
+            let speedX = this.speedX / max;
+            let speedY = this.speedY / max;
+            for (let i = 0; i < max; i += 1) {
                 this.lastX = this.x;
                 this.lastY = this.y;
                 if (slide) {
@@ -480,7 +507,7 @@ let clientPlayer = {
                         break;
                     }
                 }
-                if (this.collideWithMapEffects()) {
+                if (this.collideWithMapEffects(this.speedX, this.speedY)) {
                     break;
                 }
                 if (this.x == this.lastX && this.y == this.lastY) {
@@ -494,41 +521,45 @@ let clientPlayer = {
         return collided;
     },
     collideWithMap: function(speedX, speedY, slide) {
+        if (maps[selfMap].collisions == null || maps[selfMap].collisions[this.layer] == null) {
+            return false;
+        }
         let maxDistanceX = 0;
         let maxDistanceY = 0;
         let signX = Math.sign(speedX);
         let signY = Math.sign(speedY);
-        for (var y = Math.floor((this.y - this.height / 2) / TILE_SIZE); y < Math.ceil((this.y + this.height / 2) / TILE_SIZE); y++) {
-            if (maps[selfMap].collisions[y] == null) {
+        let minX = Math.min(Math.floor((this.x - this.width / 2) / TILE_SIZE), Math.floor((this.lastX - this.width / 2) / TILE_SIZE));
+        let minY = Math.min(Math.floor((this.y - this.height / 2) / TILE_SIZE), Math.floor((this.lastY - this.height / 2) / TILE_SIZE));
+        let maxX = Math.max(Math.ceil((this.x + this.width / 2) / TILE_SIZE), Math.ceil((this.lastX + this.width / 2) / TILE_SIZE));
+        let maxY = Math.max(Math.ceil((this.y + this.height / 2) / TILE_SIZE), Math.ceil((this.lastY + this.height / 2) / TILE_SIZE));
+        // TODO p2: make the collisions only check when lined up with grid
+        for (let y = minY; y < maxY; y++) {
+            if (maps[selfMap].collisions[this.layer][y] == null) {
                 continue;
             }
-            for (var x = Math.floor((this.x - this.width / 2) / TILE_SIZE); x < Math.ceil((this.x + this.width / 2) / TILE_SIZE); x++) {
-                if (maps[selfMap].collisions[y][x] == null || maps[selfMap].collisions[y][x][this.layer] == null) {
+            for (let x = minX; x < maxX; x++) {
+                if (maps[selfMap].collisions[this.layer][y][x] == null) {
                     continue;
                 }
-                for (let i in maps[selfMap].collisions[y][x][this.layer]) {
-                    let collision = maps[selfMap].collisions[y][x][this.layer][i];
+                for (let i in maps[selfMap].collisions[this.layer][y][x]) {
+                    let collision = maps[selfMap].collisions[this.layer][y][x][i];
                     if (collision.slowdown) {
                         continue;
                     }
-                    if (this.x - this.width / 2 < collision.x + collision.width / 2 && this.x + this.width / 2 > collision.x - collision.width / 2 && this.y - this.height / 2 < collision.y + collision.height / 2 && this.y + this.height / 2 > collision.y - collision.height / 2) {
-                        // WHAT DO I NAME THE VARIABLES BUH
-                        let distanceX = (this.x + this.width / 2 * signX) - (collision.x - collision.width / 2 * signX);
-                        let distanceY = (this.y + this.height / 2 * signY) - (collision.y - collision.height / 2 * signY);
-                        let timeX = distanceX / speedX;
-                        let timeY = distanceY / speedY;
-                        if (!isFinite(timeX)) {
-                            timeX = Infinity;
-                        }
-                        if (!isFinite(timeY)) {
-                            timeY = Infinity;
-                        }
-                        if (timeX < timeY) {
-                            maxDistanceX = Math.max(maxDistanceX, distanceX * signX);
-                        }
-                        else {
-                            maxDistanceY = Math.max(maxDistanceY, distanceY * signY);
-                        }
+                    let distanceX = (this.x + this.width / 2 * signX) - (collision.x - collision.width / 2 * signX);
+                    let distanceLastX = (this.lastX + this.width / 2 * signX) - (collision.x - collision.width / 2 * signX);
+    
+                    if (distanceX * signX > 0 && distanceLastX * signX <= 0 && Math.abs(this.y - distanceX / speedX * speedY - collision.y) < this.height / 2 + collision.height / 2) {
+                        maxDistanceX = Math.max(maxDistanceX, distanceX * signX);
+                        continue;
+                    }
+    
+                    let distanceY = (this.y + this.height / 2 * signY) - (collision.y - collision.height / 2 * signY);
+                    let distanceLastY = (this.lastY + this.height / 2 * signY) - (collision.y - collision.height / 2 * signY);
+    
+                    if (distanceY * signY > 0 && distanceLastY * signY <= 0 && Math.abs(this.x - distanceY / speedY * speedX - collision.x) < this.width / 2 + collision.width / 2) {
+                        maxDistanceY = Math.max(maxDistanceY, distanceY * signY);
+                        continue;
                     }
                 }
             }
@@ -542,110 +573,192 @@ let clientPlayer = {
             if (!isFinite(timeY)) {
                 timeY = -Infinity;
             }
-            if (timeX > timeY) {
-                if (slide) {
+            let max = Math.max(timeX, timeY);
+            if (slide) {
+                if (max == timeX) {
                     this.x -= maxDistanceX * signX;
                 }
                 else {
-                    this.x -= maxDistanceX * signX;
-                    this.y -= maxDistanceX * signX;
+                    this.y -= maxDistanceY * signY;
                 }
             }
             else {
-                if (slide) {
-                    this.y -= maxDistanceY * signY;
-                }
-                else {
-                    this.x -= maxDistanceY * signY;
-                    this.y -= maxDistanceY * signY;
-                }
+                this.x -= max * speedX;
+                this.y -= max * speedY;
             }
             return true;
         }
         return false;
+        // let maxDistanceX = 0;
+        // let maxDistanceY = 0;
+        // let signX = Math.sign(speedX);
+        // let signY = Math.sign(speedY);
+        // for (let y = Math.floor((this.y - this.height / 2) / TILE_SIZE); y < Math.ceil((this.y + this.height / 2) / TILE_SIZE); y++) {
+        //     if (maps[selfMap].collisions[y] == null) {
+        //         continue;
+        //     }
+        //     for (let x = Math.floor((this.x - this.width / 2) / TILE_SIZE); x < Math.ceil((this.x + this.width / 2) / TILE_SIZE); x++) {
+        //         if (maps[selfMap].collisions[y][x] == null || maps[selfMap].collisions[y][x][this.layer] == null) {
+        //             continue;
+        //         }
+        //         for (let i in maps[selfMap].collisions[y][x][this.layer]) {
+        //             let collision = maps[selfMap].collisions[y][x][this.layer][i];
+        //             if (collision.slowdown) {
+        //                 continue;
+        //             }
+        //             if (this.x - this.width / 2 < collision.x + collision.width / 2 && this.x + this.width / 2 > collision.x - collision.width / 2 && this.y - this.height / 2 < collision.y + collision.height / 2 && this.y + this.height / 2 > collision.y - collision.height / 2) {
+        //                 // WHAT DO I NAME THE letIABLES BUH
+        //                 let distanceX = (this.x + this.width / 2 * signX) - (collision.x - collision.width / 2 * signX);
+        //                 let distanceY = (this.y + this.height / 2 * signY) - (collision.y - collision.height / 2 * signY);
+        //                 let timeX = distanceX / speedX;
+        //                 let timeY = distanceY / speedY;
+        //                 if (!isFinite(timeX)) {
+        //                     timeX = Infinity;
+        //                 }
+        //                 if (!isFinite(timeY)) {
+        //                     timeY = Infinity;
+        //                 }
+        //                 if (timeX < timeY) {
+        //                     maxDistanceX = Math.max(maxDistanceX, distanceX * signX);
+        //                 }
+        //                 else {
+        //                     maxDistanceY = Math.max(maxDistanceY, distanceY * signY);
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
+        // if (maxDistanceX > 0 || maxDistanceY > 0) {
+        //     let timeX = maxDistanceX * signX / speedX;
+        //     let timeY = maxDistanceY * signY / speedY;
+        //     if (!isFinite(timeX)) {
+        //         timeX = -Infinity;
+        //     }
+        //     if (!isFinite(timeY)) {
+        //         timeY = -Infinity;
+        //     }
+        //     if (timeX > timeY) {
+        //         if (slide) {
+        //             this.x -= maxDistanceX * signX;
+        //         }
+        //         else {
+        //             this.x -= maxDistanceX * signX;
+        //             this.y -= maxDistanceX * signX;
+        //         }
+        //     }
+        //     else {
+        //         if (slide) {
+        //             this.y -= maxDistanceY * signY;
+        //         }
+        //         else {
+        //             this.x -= maxDistanceY * signY;
+        //             this.y -= maxDistanceY * signY;
+        //         }
+        //     }
+        //     return true;
+        // }
+        // return false;
     },
-    collideWithMapEffects: function() {
+    collideWithMapEffects: function(speedX, speedY) {
         this.slowedDown = false;
-        slowedDown: for (var y = Math.floor((this.y - this.height / 2) / TILE_SIZE); y < Math.ceil((this.y + this.height / 2) / TILE_SIZE); y++) {
-            if (maps[selfMap].collisions[y] == null) {
-                continue;
-            }
-            for (var x = Math.floor((this.x - this.width / 2) / TILE_SIZE); x < Math.ceil((this.x + this.width / 2) / TILE_SIZE); x++) {
-                if (maps[selfMap].collisions[y][x] == null || maps[selfMap].collisions[y][x][this.layer] == null) {
+        let signX = Math.sign(speedX);
+        let signY = Math.sign(speedY);
+        let minX = Math.min(Math.floor((this.x - this.width / 2) / TILE_SIZE), Math.floor((this.lastX - this.width / 2) / TILE_SIZE));
+        let minY = Math.min(Math.floor((this.y - this.height / 2) / TILE_SIZE), Math.floor((this.lastY - this.height / 2) / TILE_SIZE));
+        let maxX = Math.max(Math.ceil((this.x + this.width / 2) / TILE_SIZE), Math.ceil((this.lastX + this.width / 2) / TILE_SIZE));
+        let maxY = Math.max(Math.ceil((this.y + this.height / 2) / TILE_SIZE), Math.ceil((this.lastY + this.height / 2) / TILE_SIZE));
+        if (maps[selfMap].collisions != null && maps[selfMap].collisions[this.layer] != null) {
+            search: for (let y = minY; y < maxY; y++) {
+                if (maps[selfMap].collisions[this.layer][y] == null) {
                     continue;
                 }
-                for (let i in maps[selfMap].collisions[y][x][this.layer]) {
-                    let collision = maps[selfMap].collisions[y][x][this.layer][i];
-                    if (!collision.slowdown) {
+                for (let x = minX; x < maxX; x++) {
+                    if (maps[selfMap].collisions[this.layer][y][x] == null) {
                         continue;
                     }
-                    if (this.x - this.width / 2 < collision.x + collision.width / 2 && this.x + this.width / 2 > collision.x - collision.width / 2 && this.y - this.height / 2 < collision.y + collision.height / 2 && this.y + this.height / 2 > collision.y - collision.height / 2) {
-                        this.slowedDown = true;
-                        break slowedDown;
+                    for (let i in maps[selfMap].collisions[this.layer][y][x]) {
+                        let collision = maps[selfMap].collisions[this.layer][y][x][i];
+                        if (!collision.slowdown) {
+                            continue;
+                        }
+                        let distanceX = (this.x + this.width / 2 * signX) - (collision.x - collision.width / 2 * signX);
+                        let distanceLastX = (this.lastX + this.width / 2 * signX) - (collision.x - collision.width / 2 * signX);
+    
+                        if (distanceX * signX > 0 && distanceLastX * signX <= 0 && Math.abs(this.y - distanceX / speedX * speedY - collision.y) < this.height / 2 + collision.height / 2) {
+                            this.slowedDown = true;
+                            break search;
+                        }
+    
+                        let distanceY = (this.y + this.height / 2 * signY) - (collision.y - collision.height / 2 * signY);
+                        let distanceLastY = (this.lastY + this.height / 2 * signY) - (collision.y - collision.height / 2 * signY);
+    
+                        if (distanceY * signY > 0 && distanceLastY * signY <= 0 && Math.abs(this.x - distanceY / speedY * speedX - collision.x) < this.width / 2 + collision.width / 2) {
+                            this.slowedDown = true;
+                            break search;
+                        }
                     }
                 }
             }
         }
-        slope: for (var y = Math.floor((this.y - this.height / 2) / TILE_SIZE); y < Math.ceil((this.y + this.height / 2) / TILE_SIZE); y++) {
-            if (maps[selfMap].slopes[y] == null) {
-                continue;
-            }
-            let layer = this.layer;
-            for (var x = Math.floor((this.x - this.width / 2) / TILE_SIZE); x < Math.ceil((this.x + this.width / 2) / TILE_SIZE); x++) {
-                if (maps[selfMap].slopes[y][x] == null) {
+        if (maps[selfMap].slopes[this.layer] != null) {
+            slope: for (let y = Math.floor((this.y - this.height / 2) / TILE_SIZE); y < Math.ceil((this.y + this.height / 2) / TILE_SIZE); y++) {
+                if (maps[selfMap].slopes[this.layer][y] == null) {
                     continue;
                 }
-                let slope = maps[selfMap].slopes[y][x][this.layer];
-                if (slope != -1) {
-                    switch (slope % 5) {
-                        case 0:
-                            this.layer = Math.floor(slope / 5);
-                            break slope;
-                        case 1:
-                            if (this.x - this.width / 2 < x * TILE_SIZE + TILE_SIZE / 2) {
+                let layer = this.layer;
+                for (let x = Math.floor((this.x - this.width / 2) / TILE_SIZE); x < Math.ceil((this.x + this.width / 2) / TILE_SIZE); x++) {
+                    let slope = maps[selfMap].slopes[this.layer][y][x];
+                    if (slope != -1) {
+                        switch (slope % 5) {
+                            case 0:
                                 this.layer = Math.floor(slope / 5);
                                 break slope;
-                            }
-                            break;
-                        case 2:
-                            if (this.x + this.width / 2 > x * TILE_SIZE + TILE_SIZE / 2) {
-                                this.layer = Math.floor(slope / 5);
-                                break slope;
-                            }
-                            break;
-                        case 3:
-                            if (this.y - this.height / 2 < y * TILE_SIZE + TILE_SIZE / 2) {
-                                this.layer = Math.floor(slope / 5);
-                                break slope;
-                            }
-                            break;
-                        case 4:
-                            if (this.y + this.height / 2 > y * TILE_SIZE + TILE_SIZE / 2) {
-                                this.layer = Math.floor(slope / 5);
-                                break slope;
-                            }
-                            break;
+                            case 1:
+                                if (this.x - this.width / 2 < x * TILE_SIZE + TILE_SIZE / 2) {
+                                    this.layer = Math.floor(slope / 5);
+                                    break slope;
+                                }
+                                break;
+                            case 2:
+                                if (this.x + this.width / 2 > x * TILE_SIZE + TILE_SIZE / 2) {
+                                    this.layer = Math.floor(slope / 5);
+                                    break slope;
+                                }
+                                break;
+                            case 3:
+                                if (this.y - this.height / 2 < y * TILE_SIZE + TILE_SIZE / 2) {
+                                    this.layer = Math.floor(slope / 5);
+                                    break slope;
+                                }
+                                break;
+                            case 4:
+                                if (this.y + this.height / 2 > y * TILE_SIZE + TILE_SIZE / 2) {
+                                    this.layer = Math.floor(slope / 5);
+                                    break slope;
+                                }
+                                break;
+                        }
                     }
                 }
-            }
-            if (this.layer != layer) {
-                if (Entity.layers[this.layer] == null) {
-                    Entity.layers[this.layer] = [];
+                if (this.layer != layer) {
+                    if (Entity.layers[this.layer] == null) {
+                        Entity.layers[this.layer] = [];
+                    }
+                    Entity.layers[this.layer].push(selfPlayer);
                 }
-                Entity.layers[this.layer].push(selfPlayer);
             }
         }
         return false;
     },
     updateAnimation: function() {
-        var speed = this.animationSpeed;
+        let speed = this.animationSpeed;
         if (this.animationChangeBySpeed) {
             // speed *= Math.sqrt(Math.pow(this.speedX, 2) + Math.pow(this.speedY, 2));
             speed *= Math.max(Math.abs(this.speedX), Math.abs(this.speedY));
         }
         this.animationStage = (this.animationStage + speed) % this.animationLength;
         if (this.animationType == DIRECTIONAL_8) {
-            var angle = null;
+            let angle = null;
             if (this.speedX != 0 || this.speedY != 0) {
                 angle = Math.atan2(this.speedY, this.speedX) * 180 / Math.PI;
                 if (angle < 0) {
@@ -689,7 +802,7 @@ let clientPlayer = {
             }
         }
         else if (this.animationType == DIRECTIONAL_4) {
-            var angle = null;
+            let angle = null;
             if (this.speedX != 0 || this.speedY != 0) {
                 angle = Math.atan2(this.speedY, this.speedX) * 180 / Math.PI;
                 if (angle < 0) {
@@ -765,7 +878,7 @@ let serverPlayer = {
     moveSpeed: 10,
 };
 let tickTimeout = null;
-var updateTick = function() {
+let updateTick = function() {
     if (clientTick.tick >= serverTick.tick + 40) {
         return;
     }
@@ -806,11 +919,16 @@ var updateTick = function() {
         controls: structuredClone(clientPlayer.controls),
         tick: clientTick.tick,
     };
-    // setTimeout(function() {
-    socket.emit("tick", e);
-// }, 1000);
+    if (TEST_PING == 0) {
+        socket.emit("tick", e);
+    }
+    else {
+        setTimeout(function() {
+            socket.emit("tick", e);
+        }, TEST_PING);
+    }
 };
-function updateTickTimeout() {
+let updateTickTimeout = function() {
     if (tickTimeout != null) {
         clearTimeout(tickTimeout);
     }
@@ -826,7 +944,7 @@ function updateTickTimeout() {
 
 
 
-var respawnState = NONE;
+let respawnState = NONE;
 const respawnContainer = document.getElementById("respawnContainer");
 const respawnCooldown = document.getElementById("respawnCooldown");
 const respawnButton = document.getElementById("respawnButton");
@@ -855,9 +973,21 @@ socket.on("updateTick", function(data) {
         updateTick();
     }
     updateTickTimeout();
-    var entities = data.entities;
-    for (var i in entities) {
-        var entity = Entity.list[entities[i].id];
+    let entities = data.entities;
+    let selfX = 0;
+    let selfY = 0;
+    for (let i in entities) {
+        if (entities[i].id == selfPlayer.id) {
+            selfX = entities[i].x;
+            selfY = entities[i].y;
+        }
+    }
+    for (let i in entities) {
+        if (entities[i].type == PROJECTILE && entities[i].parent == selfPlayer.id) {
+            entities[i].x -= selfX;
+            entities[i].y -= selfY;
+        }
+        let entity = Entity.list[entities[i].id];
         if (entity == null) {
             if (entities[i].type == PROJECTILE) {
                 new Projectile(entities[i]);
@@ -883,8 +1013,8 @@ socket.on("updateTick", function(data) {
                 entity.speedY = (entities[i].y - entity.y) / Math.ceil(interpolationSteps);
                 entity.interpolationSteps = Math.ceil(interpolationSteps);
                 if (entities[i].type == PROJECTILE) {
-                    if (Projectile.data[entity.projectileId].rotationInterpolation) {
-                        var angleDifference = entities[i].angle - entity.angle;
+                    if (Projectile.data[entity.projectileId].angleInterpolation) {
+                        let angleDifference = entities[i].angle - entity.angle;
                         while (angleDifference > 180) {
                             entities[i].angle -= 360;
                             angleDifference = entities[i].angle - entity.angle;
@@ -893,7 +1023,7 @@ socket.on("updateTick", function(data) {
                             entities[i].angle += 360;
                             angleDifference = entities[i].angle - entity.angle;
                         }
-                        entity.speedAngle = angleDifference / interpolationSteps;
+                        entity.speedAngle = angleDifference / Math.ceil(interpolationSteps);
                     }
                     else {
                         entity.angle = entities[i].angle;
@@ -907,10 +1037,12 @@ socket.on("updateTick", function(data) {
                     if (entities[i].type != PLAYER) {
                         entity.animationPhase = entities[i].animationPhase;
                     }
+                    entity.heldItem = entities[i].heldItem;
+                    entity.heldItemAngle = entities[i].heldItemAngle;
                     if (entities[i].type == PLAYER) {
-                        var changed = false;
-                        for (var j in entities[i].customizations) {
-                            for (var k in entities[i].customizations[j]) {
+                        let changed = false;
+                        for (let j in entities[i].customizations) {
+                            for (let k in entities[i].customizations[j]) {
                                 if (entity.customizations[j][k] != entities[i].customizations[j][k]) {
                                     entity.customizations = entities[i].customizations;
                                     changed = true;
@@ -937,7 +1069,7 @@ socket.on("updateTick", function(data) {
             entity.updated = true;
         }
     }
-    for (var i in Entity.list) {
+    for (let i in Entity.list) {
         if (Entity.list[i].updated == false && Entity.list[i] != selfPlayer) {
             Entity.list[i].layer = null;
             delete Entity.list[i];
@@ -946,9 +1078,9 @@ socket.on("updateTick", function(data) {
             Entity.list[i].updated = false;
         }
     }
-    var droppedItems = data.droppedItems;
-    for (var i in droppedItems) {
-        var droppedItem = DroppedItem.list[droppedItems[i].id];
+    let droppedItems = data.droppedItems;
+    for (let i in droppedItems) {
+        let droppedItem = DroppedItem.list[droppedItems[i].id];
         if (droppedItem == null) {
             new DroppedItem(droppedItems[i]);
         }
@@ -956,7 +1088,7 @@ socket.on("updateTick", function(data) {
             droppedItem.updated = true;
         }
     }
-    for (var i in DroppedItem.list) {
+    for (let i in DroppedItem.list) {
         if (DroppedItem.list[i].updated == false) {
             DroppedItem.list[i].layer = null;
             delete DroppedItem.list[i];
@@ -966,8 +1098,8 @@ socket.on("updateTick", function(data) {
         }
     }
     if (settings.particles && data.particles != null) {
-        var particles = data.particles;
-        for (var i in particles) {
+        let particles = data.particles;
+        for (let i in particles) {
             switch (particles[i].type) {
                 case PARTICLE_DAMAGE:
                     new Particle(particles[i].x, particles[i].y, particles[i].layer, PARTICLE_DAMAGE, particles[i].value);
@@ -979,15 +1111,15 @@ socket.on("updateTick", function(data) {
                     new Particle(particles[i].x, particles[i].y, particles[i].layer, PARTICLE_HEAL, particles[i].value);
                     break;
                 case PARTICLE_TELEPORT:
-                    for (var j = 0; j < 20; j++) {
+                    for (let j = 0; j < 20; j++) {
                         new Particle(particles[i].x, particles[i].y, particles[i].layer, PARTICLE_TELEPORT, particles[i].value);
                     }
                     break;
                 case PARTICLE_EXPLOSION:
-                    for (var j = 0; j < particles[i].value; j++) {
+                    for (let j = 0; j < particles[i].value; j++) {
                         new Particle(particles[i].x, particles[i].y, particles[i].layer, PARTICLE_EXPLOSION, particles[i].value);
                     }
-                    for (var j = 0; j < particles[i].value / 3; j++) {
+                    for (let j = 0; j < particles[i].value / 3; j++) {
                         Particle.spread(new Particle(particles[i].x, particles[i].y, particles[i].layer, PARTICLE_FIRE, j), Math.random() * particles[i].value / 2);
                     }
                     break;
@@ -1002,8 +1134,8 @@ socket.on("updateTick", function(data) {
         cameraShakeDecay += data.cameraEffects.cameraShake.decay;
     }
     if (settings.cameraFlash && data.cameraEffects != null) {
-        var divs = [];
-        for (var i in data.cameraEffects.cameraFlash) {
+        let divs = [];
+        for (let i in data.cameraEffects.cameraFlash) {
             const div = document.createElement("div");
             div.classList.add("canvasFlash");
             div.style.opacity = data.cameraEffects.cameraFlash[i].opacity;
@@ -1016,7 +1148,7 @@ socket.on("updateTick", function(data) {
             divs.push(div);
         }
         canvasFlash.offsetHeight;
-        for (var i in divs) {
+        for (let i in divs) {
             divs[i].style.opacity = 0;
         }
     }
@@ -1027,6 +1159,17 @@ socket.on("updateTick", function(data) {
         playerTickTime.innerText = "Player: " + data.debugData.player + "ms";
         monsterTickTime.innerText = "Monster: " + data.debugData.monster + "ms";
         projectileTickTime.innerText = "Projectile: " + data.debugData.projectile + "ms";
+    }
+    if (settings.debug && data.debug != null) {
+        let debug = data.debug;
+        for (let i in debug) {
+            let entity = Entity.list[debug[i].id];
+            if (entity != null) {
+                if (debug[i].movePath != null) {
+                    entity.movePath = debug[i].movePath;
+                }
+            }
+        }
     }
 });
 socket.on("clientData", function(data) {
@@ -1140,6 +1283,11 @@ socket.on("clientData", function(data) {
         clientPlayer.animationChangeBySpeed = clientData.animationChangeBySpeed;
         clientPlayer.animationPhase = clientData.animationPhase;
     }
+    // selfPlayer.showHeldItem = clientData.showHeldItem;
+    // if (clientData.overrideHeldItem) {
+    //     selfPlayer.heldItem = clientData.heldItem;
+    //     selfPlayer.heldItemAngle = clientData.heldItemAngle;
+    // }
     if (selfPlayer.hp == 0) {
         clientPlayer.speedX = 0;
         clientPlayer.speedY = 0;
@@ -1189,52 +1337,21 @@ respawnButton.addEventListener("click", function() {
     }
 });
 
-var keyPress = function(key, state) {
+let keyPress = function(key, state) {
     switch (key) {
         case keybinds.left:
-        //     setTimeout(function() {
-        //     socket.emit("controls", {
-        //         id: LEFT,
-        //         state: state,
-        //     });
-        // }, 1000);
             clientPlayer.controls[LEFT] = state;
             break;
         case keybinds.right:
-        //     setTimeout(function() {
-        //     socket.emit("controls", {
-        //         id: RIGHT,
-        //         state: state,
-        //     });
-        // }, 1000);
             clientPlayer.controls[RIGHT] = state;
             break;
         case keybinds.up:
-        //     setTimeout(function() {
-        //     socket.emit("controls", {
-        //         id: UP,
-        //         state: state,
-        //     });
-        // }, 1000);
             clientPlayer.controls[UP] = state;
-            if (state) {
-                console.log("pressed up " + clientTick.tick)
-            }
             break;
         case keybinds.down:
-        //     setTimeout(function() {
-        //     socket.emit("controls", {
-        //         id: DOWN,
-        //         state: state,
-        //     });
-        // }, 1000);
             clientPlayer.controls[DOWN] = state;
             break;
         case keybinds.attack:
-            // socket.emit("controls", {
-            //     id: ATTACK,
-            //     state: state,
-            // });
             clientPlayer.controls[ATTACK] = state;
             break;
         case keybinds.defend:
@@ -1245,10 +1362,6 @@ var keyPress = function(key, state) {
                 break;
             }
             clientPlayer.controls[DEFEND] = state;
-            // socket.emit("controls", {
-            //     id: DEFEND,
-            //     state: state,
-            // });
             break;
     }
 };
@@ -1349,19 +1462,31 @@ document.addEventListener("mousemove", function(event) {
     }
 });
 
+document.addEventListener("wheel", function(event) {
+    if (selfPlayer == null) {
+        return;
+    }
+    hotbar.children[Inventory.selectedItem].classList.remove("itemSelected");
+    Inventory.selectedItem = (Inventory.selectedItem + Math.sign(event.deltaY) + 5) % 5;
+    hotbar.children[Inventory.selectedItem].classList.add("itemSelected");
+    socket.emit("item", {
+        action: ITEM_SELECT,
+        index: Inventory.selectedItem,
+    });
+});
+
 window.addEventListener("blur", function() {
     if (selfPlayer == null) {
         return;
     }
-    socket.emit("controls", RELEASE);
-    for (var i in clientPlayer.controls) {
+    for (let i in clientPlayer.controls) {
         if (typeof clientPlayer.controls[i] == "boolean") {
             clientPlayer.controls[i] = false;
         }
     }
 });
 
-// var teleportState = NONE;
+// let teleportState = NONE;
 const canvasShade = document.getElementById("canvasShade");
 socket.on("teleportStart", function() {
     clientPlayer.teleporting = true;
@@ -1397,7 +1522,14 @@ socket.on("teleportEnd", function(data) {
 });
 canvasShade.addEventListener("transitionend", function() {
     if (clientPlayer.teleporting && clientPlayer.teleportTime <= 0) {
-        socket.emit("teleport");
+        if (TEST_PING == 0) {
+            socket.emit("teleport");
+        }
+        else {
+            setTimeout(function() {
+                socket.emit("teleport");
+            }, TEST_PING);
+        }
         // return;
     }
     // clientPlayer.teleporting = false;
@@ -1410,9 +1542,9 @@ canvasShade.addEventListener("transitionend", function() {
 });
 
 const regionDisplayContainer = document.getElementById("regionDisplayContainer");
-var regionTimeout = null;
-var regionFadeState = 0;
-var regionId = null;
+let regionTimeout = null;
+let regionFadeState = 0;
+let regionId = null;
 socket.on("region", function(region) {
     if (regionTimeout != null) {
         clearTimeout(regionTimeout);

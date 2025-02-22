@@ -1,0 +1,202 @@
+[
+    {
+        "id": "apple",
+        "name": "Apple",
+        "description": "buh apple",
+        "image": "apple",
+        "rarity": 1,
+        "cooldown": 10,
+        "maxStackSize": 100,
+        "equip": "helmet",
+        "effects": [
+            {
+                "type": "additive",
+                "id": "hp",
+                "value": 10000
+            },
+            {
+                "type": "additive",
+                "id": "projectileSpeed",
+                "value": 2
+            },
+            {
+                "type": "additive",
+                "id": "projectileDamage",
+                "value": 100
+            },
+            {
+                "type": "additive",
+                "id": "hpRegenAccelerationCap",
+                "value": 100
+            },
+            {
+                "type": "multiplicative",
+                "id": "damage",
+                "value": 1.5
+            }
+        ],
+        "hp": 10000,
+        "hpRegen": 1,
+        "hpRegenSpeed": 1,
+        "hpRegenAccelerationRate": 1,
+        "hpRegenAccelerationCap": 1,
+        "mana": 100,
+        "manaRegen": 1,
+        "manaRegenSpeed": 1,
+        "manaRegenAccelerationRate": 1,
+        "manaRegenAccelerationCap": 1,
+        "defense": 1,
+        "damageReduction": 1,
+        "knockbackResistance": 1,
+        "projectileDefense": 1,
+        "projectileDamageReduction": 1,
+        "projectileDamage": 1,
+        "projectileSpeed": 1,
+        "projectileRange": 1,
+        "projectileAccuracy": 1,
+        "projectileKnockback": 1,
+        "projectilePierce": 1,
+        "critChance": 1,
+        "critDamage": 1,
+        "critKnockback": 1,
+        "shieldKnockbackResistance": 1,
+        "shieldBlockAngle": 1,
+        "shieldReflectionChance": 1,
+        "contactDefense": 1,
+        "contactDamageReduction": 1,
+        "contactDamage": 1,
+        "contactEvents": [],
+        "contactKnockback": 1,
+        "moveSpeed": 1,
+        "immuneEffects": [],
+        "vulnerableEffects": []
+    },
+    {
+        "id": "wooden_bow",
+        "name": "Wooden Bow",
+        "description": "buh bow",
+        "image": "bow",
+        "rarity": 1,
+        "cooldown": 10,
+        "maxStackSize": 1,
+        "effects": [
+            {
+                "type": "base",
+                "id": "attackCooldown",
+                "value": 10
+            }
+        ],
+        "attacks": [
+            [
+                {
+                    "pattern": "single",
+                    "data": {
+                        "projectile": "arrow"
+                    }
+                }
+            ]
+        ],
+        "heldItemX": 0,
+        "heldItemY": 0,
+        "heldItemAngle": 45,
+        "charge": false
+    },
+    {
+        "id": "wooden_sword",
+        "name": "Wooden Sword",
+        "description": "buh sword",
+        "image": "sword",
+        "rarity": 1,
+        "cooldown": 40,
+        "maxStackSize": 1,
+        "effects": [
+            {
+                "type": "base",
+                "id": "attackCooldown",
+                "value": 40
+            }
+        ],
+        "attacks": [
+            [
+                {
+                    "pattern": "swing",
+                    "data": {
+                        "projectile": "sword",
+                        "angle": 180,
+                        "offsetX": 32,
+                        "offsetY": 32,
+                        "offsetAngle": 45
+                    }
+                }
+            ]
+        ],
+        "heldItemX": 0,
+        "heldItemY": -16,
+        "heldItemAngle": -45,
+        "charge": false
+    },
+    {
+        "id": "wooden_staff",
+        "name": "Wooden Staff",
+        "description": "buh staff",
+        "image": "staff",
+        "rarity": 1,
+        "maxStackSize": 1,
+        "effects": [
+            {
+                "type": "base",
+                "id": "attackCooldown",
+                "value": 20
+            }
+        ],
+        "attacks": [
+            [
+                {
+                    "pattern": "single",
+                    "data": {
+                        "projectile": "magicBall"
+                    }
+                }
+            ]
+        ],
+        "heldItemX": 0,
+        "heldItemY": -16,
+        "heldItemAngle": -45,
+        "charge": false
+    },
+    {
+        "id": "christmas_2024",
+        "name": "christmas 2024",
+        "description": "not stolen from montan garuder",
+        "image": "test",
+        "rarity": 1,
+        "cooldown": 30,
+        "maxStackSize": 1,
+        "effects": [
+            {
+                "type": "additive",
+                "id": "projectileDamage",
+                "value": 100
+            },
+            {
+                "type": "base",
+                "id": "attackCooldown",
+                "value": 5
+            }
+        ],
+        "attacks": [
+            [
+                {
+                    "pattern": "test",
+                    "data": {
+                        "projectile": "tree"
+                    }
+                }
+            ]
+        ],
+        "heldItemX": -8,
+        "heldItemY": 0,
+        "heldItemAngle": 90,
+        "charge": false
+    }
+]

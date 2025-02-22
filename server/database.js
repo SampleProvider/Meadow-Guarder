@@ -1,6 +1,6 @@
 // const bcrypt = require("bcrypt");
 const salt = 10;
-var database = null;
+let database = null;
 
 Database = {
     start: function() {
@@ -13,16 +13,16 @@ Database = {
         fs.writeFile("./database.db", JSON.stringify(database), function() {});
     },
     backup: async function() {
-        var date = new Date();
-        var hour = date.getHours().toString();
+        let date = new Date();
+        let hour = date.getHours().toString();
         if (hour.length == 1) {
             hour = "0" + hour;
         }
-        var minute = date.getMinutes().toString();
+        let minute = date.getMinutes().toString();
         if (minute.length == 1) {
             minute = "0" + minute;
         }
-        var name = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + hour + "-" + minute + ".db";
+        let name = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + " " + hour + "-" + minute + ".db";
         await Bun.write("./server/backups/" + name, JSON.stringify(database));
         // return new Promise(async function(resolve, reject) {
         //     await Bun.write("./server/backups/" + name, JSON.stringify(database));
@@ -46,11 +46,11 @@ Database = {
         });
     },
     signIn: async function(username, password) {
-        var valid = Database.checkValidCharacters(username, password, null);
+        let valid = Database.checkValidCharacters(username, password, null);
         if (valid != false) {
             return valid;
         }
-        var data = database[username];
+        let data = database[username];
         if (data == null) {
             return USERNAME_INCORRECT;
         }
@@ -61,7 +61,7 @@ Database = {
             return PERMANENTLY_BANNED;
         }
         if (typeof data.banned == "number") {
-            var date = Date.now();
+            let date = Date.now();
             if (data.banned > date) {
                 return {
                     state: TEMPORARY_BANNED,
@@ -72,7 +72,7 @@ Database = {
                 Database.unban(username);
             }
         }
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             if (Player.list[i].name == username) {
                 return ALREADY_LOGGED_IN;
             }
@@ -80,20 +80,20 @@ Database = {
         return SIGN_IN_SUCCESS;
     },
     createAccount: async function(username, password) {
-        var valid = Database.checkValidCharacters(username, password, null);
+        let valid = Database.checkValidCharacters(username, password, null);
         if (valid != false) {
             return valid;
         }
-        var data = database[username];
+        let data = database[username];
         if (data != null) {
             return USERNAME_USED;
         }
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             if (Player.list[i].name == username) {
                 return ALREADY_LOGGED_IN;
             }
         }
-        var encryptedPassword = await Database.hash(password);
+        let encryptedPassword = await Database.hash(password);
         database[username] = {
             password: encryptedPassword,
             progress: {},
@@ -102,11 +102,11 @@ Database = {
         return CREATE_ACCOUNT_SUCCESS;
     },
     deleteAccount: async function(username, password) {
-        var valid = Database.checkValidCharacters(username, password, null);
+        let valid = Database.checkValidCharacters(username, password, null);
         if (valid != false) {
             return valid;
         }
-        var data = database[username];
+        let data = database[username];
         if (data == null) {
             return USERNAME_INCORRECT;
         }
@@ -117,7 +117,7 @@ Database = {
             return PERMANENTLY_BANNED;
         }
         if (typeof data.banned == "number") {
-            var date = Date.now();
+            let date = Date.now();
             if (data.banned > date) {
                 return {
                     state: TEMPORARY_BANNED,
@@ -128,7 +128,7 @@ Database = {
                 Database.unban(username);
             }
         }
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             if (Player.list[i].name == username) {
                 return ALREADY_LOGGED_IN;
             }
@@ -137,23 +137,23 @@ Database = {
         return DELETE_ACCOUNT_SUCCESS;
     },
     changePassword: async function(username, password, newPassword) {
-        var valid = Database.checkValidCharacters(username, password, null);
+        let valid = Database.checkValidCharacters(username, password, null);
         if (valid != false) {
             return valid;
         }
-        var data = database[username];
+        let data = database[username];
         if (data == null) {
             return USERNAME_INCORRECT;
         }
         if (!await Database.compare(password, data.password)) {
             return PASSWORD_INCORRECT;
         }
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             if (Player.list[i].name == username) {
                 return ALREADY_LOGGED_IN;
             }
         }
-        var encryptedPassword = await Database.hash(password);
+        let encryptedPassword = await Database.hash(password);
         database[username] = {
             password: encryptedPassword,
             progress: data.progress,
@@ -162,11 +162,11 @@ Database = {
         return CHANGE_PASSWORD_SUCCESS;
     },
     ban: function(username, state) {
-        var data = database[username];
+        let data = database[username];
         if (data == null) {
             return USERNAME_INCORRECT;
         }
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             if (Player.list[i].name == username) {
                 Player.list[i].leave();
             }
@@ -179,7 +179,7 @@ Database = {
         return BAN_SUCCESS;
     },
     unban: function(username) {
-        var data = database[username];
+        let data = database[username];
         if (data == null) {
             return USERNAME_INCORRECT;
         }
@@ -203,8 +203,8 @@ Database = {
         if (newPassword != null && newPassword.length > 120) {
             return NEW_PASSWORD_LONG;
         }
-        var lowercaseUsername = username.toLowerCase();
-        for (var i = 0; i < lowercaseUsername.length; i++) {
+        let lowercaseUsername = username.toLowerCase();
+        for (let i = 0; i < lowercaseUsername.length; i++) {
             if (!Database.validCharacters.includes(lowercaseUsername.charAt(i))) {
                 return USERNAME_INVALID;
             }

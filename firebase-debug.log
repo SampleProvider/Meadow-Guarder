@@ -1,0 +1,64 @@
+[debug] [2024-12-12T02:38:52.216Z] ----------------------------------------------------------------------
+[debug] [2024-12-12T02:38:52.218Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\gbsha\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-12-12T02:38:52.218Z] CLI Version:   13.7.3
+[debug] [2024-12-12T02:38:52.218Z] Platform:      win32
+[debug] [2024-12-12T02:38:52.218Z] Node Version:  v18.17.1
+[debug] [2024-12-12T02:38:52.219Z] Time:          Wed Dec 11 2024 21:38:52 GMT-0500 (Eastern Standard Time)
+[debug] [2024-12-12T02:38:52.219Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-12-12T02:38:52.227Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-12-12T02:38:52.227Z] > authorizing via signed-in user (maitiansha@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\gbsha\Documents\Github\Meadow-Guarder
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] i  If you want to create a project in a Google Cloud organization or folder, please use "firebase projects:create" instead, and return to this command when you've created the project. 
+[debug] [2024-12-12T02:39:14.218Z] ----------------------------------------------------------------------
+[debug] [2024-12-12T02:39:14.221Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\gbsha\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js init
+[debug] [2024-12-12T02:39:14.222Z] CLI Version:   13.7.3
+[debug] [2024-12-12T02:39:14.222Z] Platform:      win32
+[debug] [2024-12-12T02:39:14.222Z] Node Version:  v18.17.1
+[debug] [2024-12-12T02:39:14.223Z] Time:          Wed Dec 11 2024 21:39:14 GMT-0500 (Eastern Standard Time)
+[debug] [2024-12-12T02:39:14.223Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2024-12-12T02:39:14.233Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2024-12-12T02:39:14.234Z] > authorizing via signed-in user (maitiansha@gmail.com)
+[info] 
+     ######## #### ########  ######## ########     ###     ######  ########
+     ##        ##  ##     ## ##       ##     ##  ##   ##  ##       ##
+     ######    ##  ########  ######   ########  #########  ######  ######
+     ##        ##  ##    ##  ##       ##     ## ##     ##       ## ##
+     ##       #### ##     ## ######## ########  ##     ##  ######  ########
+
+You're about to initialize a Firebase project in this directory:
+
+  C:\Users\gbsha\Documents\Github\Meadow-Guarder
+
+[info] 
+=== Project Setup
+[info] 
+[info] First, let's associate this project directory with a Firebase project.
+[info] You can create multiple project aliases by running firebase use --add, 
+[info] but for now we'll just set up a default project.
+[info] 
+[info] 
+=== Hosting Setup
+[info] 
+[info] Your public directory is the folder (relative to your project directory) that
+[info] will contain Hosting assets to be uploaded with firebase deploy. If you
+[info] have a build process for your assets, use your build's output directory.
+[info] 

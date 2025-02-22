@@ -5,15 +5,15 @@ const customizeCanvas = document.getElementById("customizeCanvas");
 const customizeCtx = customizeCanvas.getContext("2d");
 
 const offscreenCanvasDisabled = typeof OffscreenCanvas == "undefined";
-var createCanvas = function(width, height) {
-    var canvas = document.createElement("canvas");
+let createCanvas = function(width, height) {
+    let canvas = document.createElement("canvas");
     canvas.width = width || 1;
     canvas.height = height || 1;
     return canvas;
 };
-var createOffscreenCanvas = function(width, height) {
+let createOffscreenCanvas = function(width, height) {
     if (offscreenCanvasDisabled) {
-        var canvas = document.createElement("canvas");
+        let canvas = document.createElement("canvas");
         canvas.width = width || 1;
         canvas.height = height || 1;
         return canvas;
@@ -28,14 +28,14 @@ const offscreenCtx = offscreenCanvas.getContext("2d", { alpha: false });
 const offscreenLightCanvas = createOffscreenCanvas();
 const offscreenLightCtx = offscreenLightCanvas.getContext("2d");
 
-var canvasScale = devicePixelRatio * settings.renderQuality / 100;
-var oldCanvasScale = canvasScale;
+let canvasScale = devicePixelRatio * settings.renderQuality / 100;
+let oldCanvasScale = canvasScale;
 
-var windowWidth = window.innerWidth;
-var windowHeight = window.innerHeight;
+let windowWidth = window.innerWidth;
+let windowHeight = window.innerHeight;
 
-var renderScale = settings.renderQuality * settings.zoom / 10000;
-var oldRenderScale = renderScale;
+let renderScale = settings.renderQuality * settings.zoom / 10000;
+let oldRenderScale = renderScale;
 
 window.onresize = function() {
     if (selfPlayer != null) {
@@ -49,7 +49,7 @@ window.onresize = function() {
         }
         if (renderScale != oldRenderScale) {
             oldRenderScale = renderScale;
-            for (var i in Entity.list) {
+            for (let i in Entity.list) {
                 if (Entity.list[i].type == DROPPED_ITEM) {
                     DroppedItem.renderStackSize(Entity.list[i]);
                 }
@@ -57,8 +57,8 @@ window.onresize = function() {
                     Rig.renderName(Entity.list[i]);
                 }
             }
-            for (var i in Particle.layers) {
-                for (var j in Particle.layers[i]) {
+            for (let i in Particle.layers) {
+                for (let j in Particle.layers[i]) {
                     Particle.renderText(Particle.layers[i][j]);
                 }
             }
@@ -68,13 +68,13 @@ window.onresize = function() {
     }
 };
 
-var resetCanvas = function(ctx) {
+let resetCanvas = function(ctx) {
     ctx.imageSmoothingEnabled = false;
     ctx.webkitImageSmoothingEnabled = false;
     ctx.mozImageSmoothingEnabled = false;
     ctx.textRendering = "optimizeSpeed";
 };
-var resetCanvases = function() {
+let resetCanvases = function() {
     offscreenCanvas.width = windowWidth * canvasScale;
     offscreenCanvas.height = windowHeight * canvasScale;
     resetCanvas(offscreenCtx);
@@ -87,7 +87,7 @@ var resetCanvases = function() {
 };
 resetCanvases();
 
-var disconnect = function() {
+let disconnect = function() {
     document.getElementById("disconnectedContainer").style.display = "block";
     socket.removeAllListeners();
     socket.once("checkReconnect", function() {
@@ -96,16 +96,16 @@ var disconnect = function() {
 };
 socket.on("disconnect", disconnect);
 
-var inputs = document.querySelectorAll("input");
-for (var i = 0; i < inputs.length; i++) {
+let inputs = document.querySelectorAll("input");
+for (let i = 0; i < inputs.length; i++) {
     if (inputs[i].type != "text" && inputs[i].type != "password" && inputs[i].type != "number") {
         inputs[i].addEventListener("keydown", function() {
             this.blur();
         });
     }
 }
-var buttons = document.querySelectorAll("button");
-for (var i = 0; i < buttons.length; i++) {
+let buttons = document.querySelectorAll("button");
+for (let i = 0; i < buttons.length; i++) {
     buttons[i].addEventListener("keydown", function() {
         this.blur();
     });
@@ -114,8 +114,8 @@ document.addEventListener("contextmenu", function(event) {
     event.preventDefault();
 });
 
-var ultraSecretInterval = null;
-var UltraSecretFilters = function(filter) {
+let ultraSecretInterval = null;
+let UltraSecretFilters = function(filter) {
     document.body.style.filter = "";
     document.body.style.transform = "";
     if (ultraSecretInterval) {
@@ -149,36 +149,36 @@ var UltraSecretFilters = function(filter) {
             }, 5);
             break;
         case "rainbow":
-            var hue1 = 0;
+            let hue1 = 0;
             ultraSecretInterval = setInterval(function() {
                 hue1 += 1;
                 document.body.style.filter = "hue-rotate(" + hue1 + "deg)";
             }, 5);
             break;
         case "spinnyCarrier":
-            var rotate = 0;
-            var rotateDirection = 1;
+            let rotate = 0;
+            let rotateDirection = 1;
             document.body.style.transformOrigin = "center center";
             ultraSecretInterval = setInterval(function() {
                 rotate += Math.random() * 10 * rotateDirection;
                 if (Math.random() < 0.1) {
                     rotateDirection *= -1;
                 }
-                var array = document.querySelectorAll("div, p, span, img, a, body");
-                for (var i = 0; i < array.length; i++) {
+                let array = document.querySelectorAll("div, p, span, img, a, body");
+                for (let i = 0; i < array.length; i++) {
                     array[i].style.transform = "rotate(" + (rotate + Math.random() * 5) + "deg)";
                 }
             }, 5);
             break;
         case "texturePack":
-            var newImages = {};
-            var total = 0;
-            for (var i in images) {
+            let newImages = {};
+            let total = 0;
+            for (let i in images) {
                 total += 1;
             }
-            for (var i in images) {
-                var image = Math.random() * total;
-                for (var j in images) {
+            for (let i in images) {
+                let image = Math.random() * total;
+                for (let j in images) {
                     image -= 1;
                     if (image < 0) {
                         newImages[i] = images[j];
@@ -187,7 +187,7 @@ var UltraSecretFilters = function(filter) {
                 }
             }
             images = newImages;
-            var randomColor = function() {
+            let randomColor = function() {
                 return "#" + Math.floor(Math.random() * Math.pow(16, 6)).toString(16);
             };
             document.body.style.setProperty("--border-dark", "1px solid " + randomColor());
@@ -204,17 +204,17 @@ var UltraSecretFilters = function(filter) {
             document.body.style.setProperty("--font-color-error", randomColor());
             break;
         case "lsd":
-            var hue = 0;
-            var brightness = 1;
-            var brightnessDirection = 1;
-            var contrast = 1;
-            var contrastDirection = -1;
-            var saturation = 1;
-            var saturationDirection = 1;
-            var scale = 1;
-            var scaleDirection = 1;
-            var blur = 0;
-            var invert = 0;
+            let hue = 0;
+            let brightness = 1;
+            let brightnessDirection = 1;
+            let contrast = 1;
+            let contrastDirection = -1;
+            let saturation = 1;
+            let saturationDirection = 1;
+            let scale = 1;
+            let scaleDirection = 1;
+            let blur = 0;
+            let invert = 0;
             document.body.style.transformOrigin = "center center";
             ultraSecretInterval = setInterval(function() {
                 hue += Math.random() * 2;
@@ -266,7 +266,7 @@ socket.on("ultraSecretFilters", function(data) {
     UltraSecretFilters(data);
 });
 
-var sleep = function(time) {
+let sleep = function(time) {
     return new Promise(function(resolve, reject) {
         setTimeout(resolve, time);
     });

@@ -28,6 +28,8 @@
 
 // use Map for Entity.list, Entity.layers, Collisions
 
+// array vs object for defining just stuff like map chunks
+
 // read inventory and stuff code
 // make sure (var craft) is used consiistently
 
@@ -42,6 +44,10 @@
 // changing Attack and DEFEND controls
 
 // pingTimesTotal vs pingTotal
+
+// change from degrees to radians?
+
+// fix the startup stuff
 
 // more logs
 
@@ -65,7 +71,7 @@
 
 // check all == nulls to see if they are actually necessary
 
-// LOOPS: try to use x, y, layer and other variables
+// LOOPS: try to use x, y, layer and other letiables
 
 // tileset: custom property so code can automatically add collisions YAY - DONE
 
@@ -75,11 +81,19 @@
 
 // potentially move teleportEnd, region, and respawn socket emits into 'tick' socket emit
 
+// change projectile parent to owner
+
+// time to remove some useless comments
+
 // Map modes:
 // Raw
 // Compressed
 // Layered
 // Compressed + layered
+
+// logs for server starting arent recorded??
+
+// delete node_modules and redo it
 
 // cooldown: stuff that happens once when hits 0
 // time: stuff that continuously happens
@@ -107,17 +121,24 @@ const keys = subtle.generateKey({
     hash: "SHA-256"
 }, false, ["encrypt", "decrypt"]);
 require("./client/data/constants.js");
-require("./server/log.js");
+require("./server/logs.js");
 
 debug("\x1b[35mMeadow Guarder " + version + " Copyright (C) MaitianSha 2023\x1b[0m");
 
 const express = require("express");
 const app = express();
-const server = require("http").Server(app);
+
+const server = require("https").createServer({
+    key: fs.readFileSync("./asdf.key"),
+    cert: fs.readFileSync("./asdf.crt"),
+}, app);
 app.get("/", (req, res) => res.sendFile(__dirname + "/client/index.html"));
 app.use("/", express.static(__dirname + "/client/"));
 // app.use("/", express.static(__dirname));
 app.use("/server", express.static(__dirname + "/server/"));
+
+const cors = require("cors");
+app.use(cors());
 
 PF = require("pathfinding");
 require("./server/inventory.js");
@@ -145,9 +166,10 @@ ENV = {
     broadcastMonsterTaunts: false,
     desyncBuffer: 200,
     physicsInaccuracy: 1,
+    maxLayerSize: 1e6,
     hitboxBuffer: 128,
     pathfindBuffer: 6,
-    pathfindUpdateSpeed: 10,
+    pathfindUpdateSpeed: 10 / 10,
     dodgeProjectiles: false,
     dodgeProjectileSearchRange: 2,
     dodgeProjectileSearchLength: 20,
@@ -156,8 +178,8 @@ ENV = {
     autoSaveInterval: 5,
     autoBackup: false,
 };
-var config = require("./config.json");
-for (var i in config) {
+let config = require("./config.json");
+for (let i in config) {
     ENV[i] = config[i];
 }
 
@@ -166,6 +188,10 @@ start = async function() {
     log("Starting Database...", "\x1b[32m", "info");
     Database.start();
     await Database.backup();
+    log("Loading Maps...", "\x1b[32m", "info");
+    for (let i = 0; i < maps.length; i++) {
+        loadMap(i);
+    }
     if (process.env.REPL_OWNER == copyrightOwner) {
         server.listen(process.env.PORT);
         log("Server Started.", "\x1b[32m", "info");
@@ -194,34 +220,34 @@ stop = async function() {
 };
 start();
 
-// process.on("SIGTERM", function() {
+process.on("SIGTERM", function() {
 
-//     fatal("An error has occured, stopping server.");
-//     fatal(err);
-//     console.error(err.stack);
-//     stop();
-// });
-// process.on("SIGINT", function() {
+    fatal("An error has occured, stopping server.");
+    fatal(err);
+    console.error(err.stack);
+    stop();
+});
+process.on("SIGINT", function() {
 
-//     fatal("An error has occured, stopping server.");
-//     fatal(err);
-//     console.error(err.stack);
-//     stop();
-// });
-// process.on("SIGQUIT", function() {
+    fatal("An error has occured, stopping server.");
+    fatal(err);
+    console.error(err.stack);
+    stop();
+});
+process.on("SIGQUIT", function() {
 
-//     fatal("An error has occured, stopping server.");
-//     fatal(err);
-//     console.error(err.stack);
-//     stop();
-// });
-// process.on("SIGILL", function() {
+    fatal("An error has occured, stopping server.");
+    fatal(err);
+    console.error(err.stack);
+    stop();
+});
+process.on("SIGILL", function() {
 
-//     fatal("An error has occured, stopping server.");
-//     fatal(err);
-//     console.error(err.stack);
-//     stop();
-// });
+    fatal("An error has occured, stopping server.");
+    fatal(err);
+    console.error(err.stack);
+    stop();
+});
 
 process.on("uncaughtException", function(err) {
     fatal("An error has occured, stopping server.");
@@ -236,55 +262,54 @@ process.on("unhandledRejection", function(err) {
     stop();
 });
 
-var publicKey = null;
-var privateKey = null;
-var RSAdecode = async function(buffer) {
+let publicKey = null;
+let privateKey = null;
+let RSAdecode = async function(buffer) {
     if (privateKey == null) {
         privateKey = (await keys).privateKey;
     }
     return new TextDecoder().decode(await subtle.decrypt({ name: "RSA-OAEP" }, privateKey, buffer));
 };
 
-var totalAssets = maps.length + 11;
+let totalAssets = maps.length + 11;
 let tilesetData = require("./client/maps/tileset.json");
 for (let i = 0; i < tilesetData.tiles.length; i++) {
     if (tilesetData.tiles[i].animation != null) {
         totalAssets += 1;
     }
 }
-var entityImages = {};
-var itemImages = {};
-for (var i in Npc.data) {
-    if (Npc.data[i].image != null && entityImages[Npc.data[i].image] == null) {
+let images = {};
+for (let i in Npc.data) {
+    if (Npc.data[i].image != null && images[Npc.data[i].image] == null) {
         totalAssets += 1;
-        entityImages[Npc.data[i].image] = true;
+        images[Npc.data[i].image] = true;
     }
 }
-for (var i in Monster.data) {
-    if (Monster.data[i].image != null && entityImages[Monster.data[i].image] == null) {
+for (let i in Monster.data) {
+    if (Monster.data[i].image != null && images[Monster.data[i].image] == null) {
         totalAssets += 1;
-        entityImages[Monster.data[i].image] = true;
+        images[Monster.data[i].image] = true;
     }
 }
-for (var i in Projectile.data) {
-    if (Projectile.data[i].image != null && entityImages[Projectile.data[i].image] == null) {
+for (let i in Projectile.data) {
+    if (Projectile.data[i].image != null && images[Projectile.data[i].image] == null) {
         totalAssets += 1;
-        entityImages[Projectile.data[i].image] = true;
+        images[Projectile.data[i].image] = true;
     }
 }
-for (var i in Inventory.items) {
-    if (Inventory.items[i].image != null && itemImages[Inventory.items[i].image] == null) {
+for (let i in Inventory.items) {
+    if (Inventory.items[i].image != null && images[Inventory.items[i].image] == null) {
         totalAssets += 1;
-        itemImages[Inventory.items[i].image] = true;
+        images[Inventory.items[i].image] = true;
     }
-    if (Inventory.items[i].image != null && itemImages[Inventory.items[i].image + "Selected"] == null) {
+    if (Inventory.items[i].image != null && images[Inventory.items[i].image + "Selected"] == null) {
         totalAssets += 1;
-        itemImages[Inventory.items[i].image + "Selected"] = true;
+        images[Inventory.items[i].image + "Selected"] = true;
     }
 }
 
-var awaitingAssets = 0;
-var awaitAssets = function(resolve, reject) {
+let awaitingAssets = 0;
+let awaitAssets = function(resolve, reject) {
     if (awaitingAssets == 0) {
         resolve();
     }
@@ -295,7 +320,15 @@ var awaitAssets = function(resolve, reject) {
     }
 };
 
-io = new (require("socket.io")).Server(server, { pingTimeout: 10000, upgradeTimeout: 300000, maxHttpBufferSize: 100000000 });
+io = require("socket.io")(server, {
+    cors: {
+        // origin: "https://meadowguarder.web.app",
+        origin: "*",
+        methods: ["GET", "POST"]
+    },
+    maxHttpBufferSize: 1e8,
+});
+// io = new (require("socket.io")).Server(server, { pingTimeout: 10000, upgradeTimeout: 300000, maxHttpBufferSize: 100000000 });
 io.on("connection", function(socket) {
     socket.leave = function() {
         socket.emit("disconnected");
@@ -303,7 +336,7 @@ io.on("connection", function(socket) {
         socket.onevent = function() { };
         socket.disconnect();
     };
-    var player = new Player(socket);
+    let player = new Player(socket);
     socket.once("publicKey", async function() {
         if (publicKey == null) {
             publicKey = await subtle.exportKey("jwk", (await keys).publicKey);
@@ -326,8 +359,8 @@ io.on("connection", function(socket) {
             player.leave();
             return;
         }
-        var decryptedPassword = data.password instanceof Buffer ? await RSAdecode(data.password) : data.password;
-        var decryptedNewPassword = null;
+        let decryptedPassword = data.password instanceof Buffer ? await RSAdecode(data.password) : data.password;
+        let decryptedNewPassword = null;
         if (data.newPassword != null) {
             if (!(data.password instanceof Buffer || typeof data.password == "string")) {
                 socket.emit("signIn", { state: DATABASE_EXPLOIT });
@@ -343,7 +376,7 @@ io.on("connection", function(socket) {
                     player.leave();
                     return;
                 }
-                var state = await Database.signIn(data.username, decryptedPassword);
+                let state = await Database.signIn(data.username, decryptedPassword);
                 if (typeof state == "number") {
                     state = { state: state };
                 }
@@ -424,15 +457,15 @@ io.on("connection", function(socket) {
         }
         info("Asset --- ");
         if (data.data.imageData) {
-            // var fileSignature = [137, 80, 78, 71, 13, 10, 26, 10];
-            // var chunkLength = [Math.floor(data.data.imageData.length / Math.pow(256, 3)), Math.floor(data.data.imageData.length % Math.pow(256, 3) / Math.pow(256, 2)), Math.floor(data.data.imageData.length % Math.pow(256, 2) / Math.pow(256, 1)), data.data.imageData.length % 256];
-            // var chunkType = [73, 72, 68, 82];
-            // var chunkCRC = [];
-            // var chunkCRCTable = [];
+            // let fileSignature = [137, 80, 78, 71, 13, 10, 26, 10];
+            // let chunkLength = [Math.floor(data.data.imageData.length / Math.pow(256, 3)), Math.floor(data.data.imageData.length % Math.pow(256, 3) / Math.pow(256, 2)), Math.floor(data.data.imageData.length % Math.pow(256, 2) / Math.pow(256, 1)), data.data.imageData.length % 256];
+            // let chunkType = [73, 72, 68, 82];
+            // let chunkCRC = [];
+            // let chunkCRCTable = [];
 
-            // for (var i = 0; i < 256; i++) {
-            //     var c = i;
-            //     for (var j = 0; j < 8; j++) {
+            // for (let i = 0; i < 256; i++) {
+            //     let c = i;
+            //     for (let j = 0; j < 8; j++) {
             //         if (c & 1) {
             //             c = 3988292384 ^ (c >> 1);
             //         }
@@ -442,8 +475,8 @@ io.on("connection", function(socket) {
             //     }
             //     chunkCRCTable[i] = c;
             // }
-            // var c = 4294967295;
-            // for (var i = 0; i < data.data.imageData.length; i++) {
+            // let c = 4294967295;
+            // for (let i = 0; i < data.data.imageData.length; i++) {
             //     c = chunkCRCTable[(c ^ data.data.imageData[i]) & 255] ^ (c >> 8);
             // }
             // c = c ^ 4294967295;
@@ -451,7 +484,7 @@ io.on("connection", function(socket) {
 
             // info(typeof data.data.imageData)
             data.data.imageData = new Array(data.data.imageData)
-            var buffer = Buffer.from(data.data.imageDataURL, "base64");
+            let buffer = Buffer.from(data.data.imageDataURL, "base64");
             fs.writeFile("./client/images/" + data.file + "/" + data.data.image + ".png", buffer, function() {});
             info("aaa written file " + data.data.image);
         }
@@ -460,7 +493,7 @@ io.on("connection", function(socket) {
                 if (Projectile.data[data.asset] == null) {
                     Projectile.data[data.asset] = {};
                 }
-                for (var i in data) {
+                for (let i in data) {
                     if (i != "imageData" && i != "imageDataURL") {
                         Projectile.data[data.asset][i] = data.data[i];
                     }
@@ -477,9 +510,9 @@ TPS = 0;
 tick = 0;
 debugData = {};
 
-var tpsTimes = [];
-var updateTime = performance.now();
-var update = function() {
+let tpsTimes = [];
+let updateTime = performance.now();
+let update = function() {
     if (update != null) {
         updateTime += 50;
         // if (TPS > 30) {
@@ -487,29 +520,30 @@ var update = function() {
         // }
         setTimeout(update, updateTime - performance.now());
     }
-    var start = performance.now();
+    let start = performance.now();
     Entity.update();
-    for (var i in Player.list) {
-        var player = Player.list[i];
+    for (let i in Player.list) {
+        let player = Player.list[i];
         if (player.name == null) {
             continue;
         }
-        var localEntityPack = [];
-        var localParticlePack = [];
-        var localDroppedItemPack = [];
-        for (var y = player.chunkY - player.renderDistance; y <= player.chunkY + player.renderDistance; y++) {
+        let localEntityPack = [];
+        let localParticlePack = [];
+        let localDroppedItemPack = [];
+        let localDebugPack = [];
+        for (let y = player.chunkY - player.renderDistance; y <= player.chunkY + player.renderDistance; y++) {
             if (entityPack[player.map][y] != null) {
-                for (var x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
+                for (let x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
                     if (entityPack[player.map][y][x] != null) {
                         localEntityPack.push(...entityPack[player.map][y][x]);
                     }
                 }
             }
             if (droppedItemPack[player.map][y] != null) {
-                for (var x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
+                for (let x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
                     if (droppedItemPack[player.map][y][x] != null) {
-                        for (var i in droppedItemPack[player.map][y][x]) {
-                            if (droppedItemPack[player.map][y][x][i].parent == null || droppedItemPack[player.map][y][x][i].parent == player.id) {
+                        for (let i in droppedItemPack[player.map][y][x]) {
+                            if (droppedItemPack[player.map][y][x][i].owner == null || droppedItemPack[player.map][y][x][i].owner == player.id) {
                                 localDroppedItemPack.push(droppedItemPack[player.map][y][x][i]);
                             }
                         }
@@ -518,9 +552,9 @@ var update = function() {
             }
         }
         if (player.particles) {
-            for (var y = player.chunkY - player.renderDistance; y <= player.chunkY + player.renderDistance; y++) {
+            for (let y = player.chunkY - player.renderDistance; y <= player.chunkY + player.renderDistance; y++) {
                 if (particlePack[player.map][y] != null) {
-                    for (var x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
+                    for (let x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
                         if (particlePack[player.map][y][x] != null) {
                             localParticlePack.push(...particlePack[player.map][y][x]);
                         }
@@ -528,7 +562,7 @@ var update = function() {
                 }
             }
         }
-        var pack = {
+        let pack = {
             serverTick: {
                 tick: tick,
                 time: Date.now(),
@@ -550,16 +584,33 @@ var update = function() {
             };
         }
         if (player.debug) {
+            // TODO p1: change names
             pack.debugData = debugData;
+            for (let y = player.chunkY - player.renderDistance; y <= player.chunkY + player.renderDistance; y++) {
+                if (debugPack[player.map][y] != null) {
+                    for (let x = player.chunkX - player.renderDistance; x <= player.chunkX + player.renderDistance; x++) {
+                        if (debugPack[player.map][y][x] != null) {
+                            localDebugPack.push(...debugPack[player.map][y][x]);
+                        }
+                    }
+                }
+            }
+            pack.debug = localDebugPack;
         }
-        // setTimeout(function() {
-        //     player.socket.emit("updateTick", pack);
-        // }, 1000);
-        player.socket.emit("updateTick", pack);
-        player.socket.emit("updateInventory", Inventory.getClientData(player.inventory));
+        if (TEST_PING == 0) {
+            player.socket.emit("updateTick", pack);
+        }
+        else {
+            setTimeout(function() {
+                player.socket.emit("updateTick", pack);
+            }, TEST_PING);
+        }
+        if (!player.loading) {
+            player.socket.emit("updateInventory", Inventory.getClientData(player.inventory));
+        }
     }
-    var end = performance.now();
-    if (end - start > 25) {
+    let end = performance.now();
+    if (end - start > 50) {
         warn("[!] Server Tick Timed Out! Took " + Math.round((end - start) * 10) / 10 + "ms! [!]");
     }
     tpsTimes.push(end);
@@ -573,15 +624,15 @@ update();
 
 // setInterval(function() {
 //     info("TPS: " + TPS);
-//     var projectiles = 0;
-//     for (var i in Projectile.list) {
+//     let projectiles = 0;
+//     for (let i in Projectile.list) {
 //         projectiles += 1;
 //     }
 //     info("Projectiles: " + projectiles);
 // }, 1000);
 
-var autoSaveInterval = setInterval(function() {
-    for (var i in Player.list) {
+let autoSaveInterval = setInterval(function() {
+    for (let i in Player.list) {
         if (Player.list[i].name != null) {
             Database.saveProgress(Player.list[i].name, Player.saveProgress(Player.list[i]));
         }
@@ -593,8 +644,8 @@ var autoSaveInterval = setInterval(function() {
 }, ENV.autoSaveInterval * 60 * 1000);
 
 // setTimeout(async function() {
-//     var object = { test: { bla: { buh: { oof: 1 } } } }; console.log(1); for (var i = 0; i < 1000000; i++) { object.test.bla.buh.oof += 1; } console.log(2);
-//     var object = { test: { bla: { buh: { oof: 1 } } } }; console.log(1); var object2 = object.test.bla.buh; for (var i = 0; i < 1000000; i++) { object2.oof += 1; } console.log(2);
+//     let object = { test: { bla: { buh: { oof: 1 } } } }; console.log(1); for (let i = 0; i < 1000000; i++) { object.test.bla.buh.oof += 1; } console.log(2);
+//     let object = { test: { bla: { buh: { oof: 1 } } } }; console.log(1); let object2 = object.test.bla.buh; for (let i = 0; i < 1000000; i++) { object2.oof += 1; } console.log(2);
 // })
 
 // purple: amethyst
@@ -605,3 +656,7 @@ var autoSaveInterval = setInterval(function() {
 // red: pyroite
 
 exports.oofStrictMode = 1
+
+
+// openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 \ -nodes -keyout asdf.key -out asdf.crt -subj "/CN=meadowguarder.web.app" \ -addext "subjectAltName=DNS:meadowguarder.web.app,DNS:*.meadowguarder.web.app"
+// openssl req -x509 -newkey rsa:4096 -sha256 -days 3650 -nodes -keyout asdf.key -out asdf.crt -subj "//CN=meadowguarder.web.app"

@@ -1,12 +1,12 @@
 Inventory = function(player) {
-    var self = {
+    let self = {
         items: [],
         modifiedItems: [],
         selectedItem: 0,
         maxItems: 10,
         player: player,
     };
-    for (var i = EQUIP_DRAGGING; i < self.maxItems; i++) {
+    for (let i = EQUIP_DRAGGING; i < self.maxItems; i++) {
         self.items[i] = ITEM_NULL;
         self.modifiedItems[i] = false;
         self.modifiedItems[i] = true;
@@ -141,12 +141,12 @@ Inventory = function(player) {
                 if (draggingItem != ITEM_NULL && (!Inventory.isSameItem(draggingItem, craft.id, craft.enchantments) || draggingItem.stackSize + craft.stackSize > Inventory.items[craft.id].maxStackSize)) {
                     break;
                 }
-                for (var i = 0; i < craft.materials.length; i++) {
+                for (let i = 0; i < craft.materials.length; i++) {
                     if (!Inventory.hasItem(self, craft.materials[i].id, [], craft.materials[i].stackSize)) {
                         break;
                     }
                 }
-                for (var i = 0; i < craft.materials.length; i++) {
+                for (let i = 0; i < craft.materials.length; i++) {
                     Inventory.removeItem(self, craft.materials[i].id, [], craft.materials[i].stackSize);
                 }
                 if (draggingItem == ITEM_NULL) {
@@ -164,7 +164,17 @@ Inventory = function(player) {
                 // if (data.index < 0 && data.index >= EQUIP_ACCESSORY_2) {
                 // }
                 break;
-            case ITEM_SALVAGE:
+            // case ITEM_SALVAGE:
+            //     break;
+            case ITEM_SELECT:
+                if (typeof data.index != "number") {
+                    break;
+                }
+                if (data.index < 0 || data.index >= 5) {
+                    break;
+                }
+                self.selectedItem = data.index;
+                Player.updateStats(self.player);
                 break;
         }
     });
@@ -173,7 +183,7 @@ Inventory = function(player) {
     return self;
 };
 Inventory.addItem = function(inventory, id, enchantments, stackSize) {
-    for (var i in inventory.items) {
+    for (let i in inventory.items) {
         if (inventory.items[i] == ITEM_NULL) {
             inventory.items[i] = {
                 id: id,
@@ -206,9 +216,9 @@ Inventory.addItem = function(inventory, id, enchantments, stackSize) {
     // overflow, drop items
 };
 Inventory.removeItem = function(inventory, id, enchantments, stackSize) {
-    for (var i in inventory.items) {
+    for (let i in inventory.items) {
         if (Inventory.isSameItem(inventory.items[i], id, enchantments)) {
-            var min = Math.min(stackSize, inventory.items[i].stackSize);
+            let min = Math.min(stackSize, inventory.items[i].stackSize);
             stackSize -= min;
             inventory.items[i].stackSize -= min;
             if (inventory.items[i].stackSize == 0) {
@@ -223,7 +233,7 @@ Inventory.removeItem = function(inventory, id, enchantments, stackSize) {
     return false;
 };
 Inventory.hasItem = function(inventory, id, enchantments, stackSize) {
-    for (var i in inventory.items) {
+    for (let i in inventory.items) {
         if (Inventory.isSameItem(inventory.items[i], id, enchantments)) {
             stackSize -= inventory.items[i].stackSize;
             if (stackSize <= 0) {
@@ -237,12 +247,12 @@ Inventory.isSameItem = function(item, id, enchantments) {
     if (item == ITEM_NULL || item.id != id) {
         return false;
     }
-    for (var i in item.enchantments) {
+    for (let i in item.enchantments) {
         if (item.enchantments[i] != enchantments) {
             return false;
         }
     }
-    for (var i in enchantments) {
+    for (let i in enchantments) {
         if (item.enchantments[i] != enchantments) {
             return false;
         }
@@ -250,16 +260,27 @@ Inventory.isSameItem = function(item, id, enchantments) {
     return true;
 };
 Inventory.update = function(inventory) {
-    for (var i in inventory.items) {
+    for (let i in inventory.items) {
         if (inventory.items[i] == ITEM_NULL) {
             continue;
         }
         inventory.items[i].cooldown = Math.max(inventory.items[i].cooldown - 1, 0);
+        // if (i == inventory.player.selectedItem) {
+        //     if (inventory.items[i].cooldown > 0 || charging) {
+        //         inventory.items[i].cooldown -= 1;
+        //     }
+        //     if (inventory.items[i].cooldown <= -inventory.player.chargeTime) {
+        //         inventory.items[i].charged = true;
+        //     }
+        // }
+        // else {
+        //     inventory.items[i].cooldown = Math.max(inventory.items[i].cooldown - 1, 0);
+        // }
     }
 };
 Inventory.getClientData = function(inventory) {
-    var data = [];
-    for (var i in inventory.modifiedItems) {
+    let data = {};
+    for (let i in inventory.modifiedItems) {
         if (inventory.modifiedItems[i]) {
             data[i] = inventory.items[i];
             inventory.modifiedItems[i] = false;
@@ -273,12 +294,34 @@ Inventory.saveProgress = function(inventory) {
 Inventory.loadProgress = function(inventory, data) {
     
 };
-Inventory.items = require("./../client/data/item.json");
-Inventory.crafts = require("./../client/data/craft.json");
-Inventory.enchantments = require("./../client/data/enchantment.json");
+Inventory.items = require("./../client/data/items.json");
+Inventory.crafts = require("./../client/data/crafts.json");
+Inventory.enchantments = require("./../client/data/enchantments.json");
 Inventory.parseItem = function(item) {
+    if (item.equip != null) {
+        switch (item.equip) {
+            case "helmet":
+                item.equip = EQUIP_HELMET;
+                break;
+            case "chestplate":
+                item.equip = EQUIP_CHESTPLATE;
+                break;
+            case "boots":
+                item.equip = EQUIP_BOOTS;
+                break;
+            case "shield":
+                item.equip = EQUIP_SHIELD;
+                break;
+            case "crystal":
+                item.equip = EQUIP_CRYSTAL;
+                break;
+            case "accessory":
+                item.equip = EQUIP_ACCESSORY_1;
+                break;
+        }
+    }
     if (item.effects != null) {
-        for (var i in item.effects) {
+        for (let i in item.effects) {
             switch (item.effects[i].type) {
                 case "base":
                     item.effects[i].type = EFFECT_BASE;
@@ -297,23 +340,23 @@ Inventory.parseItem = function(item) {
     }
 };
 Inventory.parseCraft = function(craft) {
-    for (var i = 0; i < Inventory.items.length; i++) {
+    for (let i = 0; i < Inventory.items.length; i++) {
         if (craft.id == Inventory.items[i].id) {
             craft.id = i;
             break;
         }
     }
 };
-// for (var i in Inventory.items) {
-for (var i = 0; i < Inventory.items.length; i++) {
+// for (let i in Inventory.items) {
+for (let i = 0; i < Inventory.items.length; i++) {
     Inventory.parseItem(Inventory.items[i]);
 }
-for (var i = 0; i < Inventory.crafts.length; i++) {
+for (let i = 0; i < Inventory.crafts.length; i++) {
     Inventory.parseCraft(Inventory.crafts[i]);
 }
 
-DroppedItem = function(id, enchantments, stackSize, x, y, layer, map, parent) {
-    var self = {
+DroppedItem = function(id, enchantments, stackSize, x, y, layer, map, owner) {
+    let self = {
         id: Math.random(),
         x: x,
         y: y,
@@ -326,7 +369,7 @@ DroppedItem = function(id, enchantments, stackSize, x, y, layer, map, parent) {
             enchantments: enchantments,
             stackSize: stackSize,
         },
-        parent: parent,
+        owner: owner,
         despawnTimer: ENV.itemDespawnTime * 60 * 20,
         type: DROPPED_ITEM,
     };

@@ -12,7 +12,7 @@ Global Colors:
 */
 
 appendLog = function(text, type) {
-    var prefix = "--- ";
+    let prefix = "--- ";
     if (type == "info") {
         prefix = " INFO ";
     }
@@ -31,14 +31,14 @@ appendLog = function(text, type) {
     else if (type == "chat") {
         prefix = " CHAT ";
     }
-    var date = new Date();
-    var name = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".log";
+    let date = new Date();
+    let name = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".log";
     fs.appendFile("./server/logs/" + name, prefix + text.replaceAll("\n", "\n" + prefix) + "\n", {encoding: "utf-8"}, function() {});
 };
 
-var awaitingLogs = 0;
+let awaitingLogs = 0;
 log = function(text, color, type) {
-    var prefix = getTimeStamp() + "| ";
+    let prefix = getTimeStamp() + "| ";
     switch (type) {
         case "info":
             prefix += " INFO";
@@ -67,8 +67,8 @@ log = function(text, color, type) {
     process.stdout.write("\x1b[2K\r " + prefix + color + text + "\x1b[0m\n\r> ");
     prompt._refreshLine();
 
-    var date = new Date();
-    var name = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".log";
+    let date = new Date();
+    let name = date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate() + ".log";
 
     awaitingLogs += 1;
     fs.appendFile("./server/logs/" + name, prefix + text.toString().replaceAll("\n", "\n" + prefix) + "\n", { encoding: "utf-8" }, function() {
@@ -120,16 +120,16 @@ insertChat = function(text, color, player) {
 };
 
 getTimeStamp = function() {
-    var date = new Date();
-    var hour = date.getHours().toString();
+    let date = new Date();
+    let hour = date.getHours().toString();
     if (hour.length == 1) {
         hour = "0" + hour;
     }
-    var minute = date.getMinutes().toString();
+    let minute = date.getMinutes().toString();
     if (minute.length == 1) {
         minute = "0" + minute;
     }
-    var second = date.getSeconds().toString();
+    let second = date.getSeconds().toString();
     if (second.length == 1) {
         second = "0" + second;
     }
@@ -138,12 +138,12 @@ getTimeStamp = function() {
 
 const commands = {
     players: function() {
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             console.log(Player.list[i]);
         }
     },
     ultraSecretFilters: function(argument) {
-        for (var i in Player.list) {
+        for (let i in Player.list) {
             Player.list[i].socket.emit("ultraSecretFilters", argument);
         }
     },
@@ -222,11 +222,11 @@ prompt.on("line", async function(input) {
         }
         if (input.indexOf("/") == 0) {
             try {
-                var command = input.substring(1).split(" ").shift();
+                let command = input.substring(1).split(" ").shift();
                 appendLog(getTimeStamp() + "SERVER: " + input, "debug");
                 if (commands[command]) {
                     try {
-                        var result = commands[command](input.substring(command.length + 2));
+                        let result = commands[command](input.substring(command.length + 2));
                         if (result != null) {
                             result = result.toString();
                         }
@@ -247,7 +247,7 @@ prompt.on("line", async function(input) {
         else {
             try {
                 appendLog(getTimeStamp() + "SERVER: " + input, "debug");
-                var result = eval(input);
+                let result = eval(input);
                 if (result == null) {
                     result = "Successfully executed command";
                 }

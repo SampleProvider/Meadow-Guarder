@@ -1,11 +1,11 @@
-var loadedAssets = 0;
-var loadNpcs = function() {
+let loadedAssets = 0;
+let loadNpcs = function() {
     return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "./../data/npc.json", true);
+        let request = new XMLHttpRequest();
+        request.open("GET", "./../data/npcs.json", true);
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
-                var data = JSON.parse(this.response);
+                let data = JSON.parse(this.response);
                 Rig.data[NPC] = data;
                 loadedAssets += 1;
                 console.log("loaded npcs");
@@ -31,13 +31,13 @@ var loadNpcs = function() {
         request.send();
     });
 };
-var loadMonsters = function() {
+let loadMonsters = function() {
     return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "./../data/monster.json", true);
+        let request = new XMLHttpRequest();
+        request.open("GET", "./../data/monsters.json", true);
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
-                var data = JSON.parse(this.response);
+                let data = JSON.parse(this.response);
                 Rig.data[MONSTER] = data;
                 loadedAssets += 1;
                 console.log("loaded monsters");
@@ -63,13 +63,13 @@ var loadMonsters = function() {
         request.send();
     });
 };
-var loadProjectiles = function() {
+let loadProjectiles = function() {
     return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "./../data/projectile.json", true);
+        let request = new XMLHttpRequest();
+        request.open("GET", "./../data/projectiles.json", true);
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
-                var data = JSON.parse(this.response);
+                let data = JSON.parse(this.response);
                 Projectile.data = data;
                 loadedAssets += 1;
                 console.log("loaded projectiles");
@@ -96,13 +96,13 @@ var loadProjectiles = function() {
     });
 };
 
-var loadItems = function() {
+let loadItems = function() {
     return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "./../data/item.json", true);
+        let request = new XMLHttpRequest();
+        request.open("GET", "./../data/items.json", true);
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
-                var data = JSON.parse(this.response);
+                let data = JSON.parse(this.response);
                 Inventory.data.items = data;
                 loadedAssets += 1;
                 console.log("loaded items");
@@ -114,6 +114,8 @@ var loadItems = function() {
                             loadedAssets += 1;
                             console.log("loaded " + data[i].image);
                         };
+                    }
+                    if (data[i].image != null && Entity.images[data[i].image + "Selected"] == null) {
                         Entity.images[data[i].image + "Selected"] = new Image();
                         Entity.images[data[i].image + "Selected"].src = "./../images/item/" + data[i].image + "Selected.png";
                         Entity.images[data[i].image + "Selected"].onload = function() {
@@ -121,8 +123,30 @@ var loadItems = function() {
                             console.log("loaded " + data[i].image + "Selected");
                         };
                     }
+                    if (data[i].equip != null) {
+                        switch (data[i].equip) {
+                            case "helmet":
+                                data[i].equip = EQUIP_HELMET;
+                                break;
+                            case "chestplate":
+                                data[i].equip = EQUIP_CHESTPLATE;
+                                break;
+                            case "boots":
+                                data[i].equip = EQUIP_BOOTS;
+                                break;
+                            case "shield":
+                                data[i].equip = EQUIP_SHIELD;
+                                break;
+                            case "crystal":
+                                data[i].equip = EQUIP_CRYSTAL;
+                                break;
+                            case "accessory":
+                                data[i].equip = EQUIP_ACCESSORY_1;
+                                break;
+                        }
+                    }
                     if (data[i].effects != null) {
-                        for (var j in data[i].effects) {
+                        for (let j in data[i].effects) {
                             switch (data[i].effects[j].type) {
                                 case "base":
                                     data[i].effects[j].type = EFFECT_BASE;
@@ -152,13 +176,13 @@ var loadItems = function() {
         request.send();
     });
 };
-var loadEnchantments = function() {
+let loadEnchantments = function() {
     return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "./../data/enchantment.json", true);
+        let request = new XMLHttpRequest();
+        request.open("GET", "./../data/enchantments.json", true);
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
-                var data = JSON.parse(this.response);
+                let data = JSON.parse(this.response);
                 Inventory.data.enchantments = data;
                 loadedAssets += 1;
                 console.log("loaded enchantments");
@@ -174,13 +198,13 @@ var loadEnchantments = function() {
         request.send();
     });
 };
-var loadCrafts = function() {
+let loadCrafts = function() {
     return new Promise(function(resolve, reject) {
-        var request = new XMLHttpRequest();
-        request.open("GET", "./../data/craft.json", true);
+        let request = new XMLHttpRequest();
+        request.open("GET", "./../data/crafts.json", true);
         request.onload = function() {
             if (this.status >= 200 && this.status < 400) {
-                var data = JSON.parse(this.response);
+                let data = JSON.parse(this.response);
                 Inventory.data.crafts = data;
                 loadedAssets += 1;
                 console.log("loaded crafts");

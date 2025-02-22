@@ -1,6 +1,6 @@
 // use html template
 
-var draggableWindow = {
+let draggableWindow = {
     x: 0,
     y: 0,
     state: WINDOW_HIDDEN,
@@ -23,15 +23,15 @@ var draggableWindow = {
         this.window.style.top = this.y + "px";
     },
     updateWidth: function() {
-        // var borderSize = (this.window.getBoundingClientRect().width - this.window.clientWidth) / 2;
-        // var borderSize = 1 / devicePixelRatio;
-        // var borderSize = devicePixelRatio;
-        var borderSize = Number(window.getComputedStyle(this.window).getPropertyValue("border-width").split("px")[0]);
-        // var inventoryWidth = (18 * 5 + 2) * settings.itemSize / 16 + borderSize * 10 + 8;
-        var inventoryWidth = (18 * 5 + 2) * settings.itemSize / 16 + borderSize * 10 + 8 - 2 * settings.itemSize / 16;
-        var equipWidth = (18 * 4 + 2) * settings.itemSize / 16 + borderSize * 8 + 8 - 2 * settings.itemSize / 16;
-        // var inventoryWidth = (18 * 5 + 2) * settings.itemSize / 16 + borderSize * 10;
-        // var equipWidth = (18 * 3 + 2) * settings.itemSize / 16 + borderSize * 6;
+        // let borderSize = (this.window.getBoundingClientRect().width - this.window.clientWidth) / 2;
+        // let borderSize = 1 / devicePixelRatio;
+        // let borderSize = devicePixelRatio;
+        let borderSize = Number(window.getComputedStyle(this.window).getPropertyValue("border-width").split("px")[0]);
+        // let inventoryWidth = (18 * 5 + 2) * settings.itemSize / 16 + borderSize * 10 + 8;
+        let inventoryWidth = (18 * 5 + 2) * settings.itemSize / 16 + borderSize * 10 + 8 - 2 * settings.itemSize / 16;
+        let equipWidth = (18 * 4 + 2) * settings.itemSize / 16 + borderSize * 8 + 8 - 2 * settings.itemSize / 16;
+        // let inventoryWidth = (18 * 5 + 2) * settings.itemSize / 16 + borderSize * 10;
+        // let equipWidth = (18 * 3 + 2) * settings.itemSize / 16 + borderSize * 6;
         this.window.style.width = inventoryWidth + equipWidth + 4 * settings.itemSize / 16 - 12 + 8 + 106 + 4 + 4 * 4 + borderSize * 6 + 2 + "px";
         inventoryTab.style.width = inventoryWidth + "px";
         equipTab.style.width = equipWidth + "px";
@@ -88,8 +88,8 @@ var draggableWindow = {
         }
     },
 };
-var tabs = document.getElementById("windowTabs").children;
-for (var i = 0; i < tabs.length; i++) {
+let tabs = document.getElementById("windowTabs").children;
+for (let i = 0; i < tabs.length; i++) {
     if (tabs[i].id == "inventoryTab") {
         continue;
     }
@@ -105,6 +105,9 @@ draggableWindow.window.addEventListener("mousedown", function(event) {
     if (changingKeybind != null) {
         changeKeybind(event.button);
     }
+    event.stopPropagation();
+});
+draggableWindow.window.addEventListener("wheel", function(event) {
     event.stopPropagation();
 });
 draggableWindow.windowBar.addEventListener("mousedown", function(event) {
@@ -133,8 +136,8 @@ draggableWindow.show();
 
 
 const settingsTable = document.getElementById("settingsTable");
-var settings = {};
-var settingData = {
+let settings = {};
+let settingData = {
     // performance
     fps: {name: "Target FPS:", min: 10, max: 120, step: 10, default: 60, update: function() {
         interpolationSteps = settings.fps / 20;
@@ -344,13 +347,6 @@ var settingData = {
         document.getElementById("debugOverlay").style.display = settings.debug ? "block" : "none";
         this.indicator.innerText = settings.debug ? "on" : "off";
     }, label: "Debug"},
-    desyncBuffer: {name: "Desync Buffer:", min: 0, max: 64, step: 16, default: 0, update: function() {
-        socket.emit("settings", {
-            id: "desyncBuffer",
-            value: settings.desyncBuffer,
-        });
-        this.indicator.innerText = settings.desyncBuffer + "px";
-    }},
 };
 document.addEventListener("fullscreenchange", function() {
     if (!document.fullscreenElement) {
@@ -361,13 +357,13 @@ document.addEventListener("fullscreenchange", function() {
     }
 });
 
-var saveSettings = function() {
+let saveSettings = function() {
     localStorage.setItem("settings", JSON.stringify(settings));
 };
-var loadSettings = function() {
-    var data = JSON.parse(localStorage.getItem("settings"));
+let loadSettings = function() {
+    let data = JSON.parse(localStorage.getItem("settings"));
     if (data != null) {
-        for (var i in data) {
+        for (let i in data) {
             if (settingData[i] != null && typeof settingData[i].default == typeof data[i]) {
                 settings[i] = data[i];
             }
@@ -467,8 +463,8 @@ for (let i in settingData) {
 }
 
 const keybindsTable = document.getElementById("keybindsTable");
-var keybinds = {};
-var keybindData = {
+let keybinds = {};
+let keybindData = {
     left: {name: "Move Left:", default: "a", label: "Movement"},
     right: {name: "Move Right:", default: "d"},
     up: {name: "Move Up:", default: "w"},
@@ -485,15 +481,15 @@ var keybindData = {
     debug: {name: "Debug:", default: "\\", label: "Debug"},
 };
 
-var changingKeybind = null;
+let changingKeybind = null;
 
-var saveKeybinds = function() {
+let saveKeybinds = function() {
     localStorage.setItem("keybinds", JSON.stringify(keybinds));
 };
-var loadKeybinds = function() {
-    var data = JSON.parse(localStorage.getItem("keybinds"));
+let loadKeybinds = function() {
+    let data = JSON.parse(localStorage.getItem("keybinds"));
     if (data != null) {
-        for (var i in data) {
+        for (let i in data) {
             if (keybindData[i] != null) {
                 keybinds[i] = data[i];
             }
@@ -501,8 +497,8 @@ var loadKeybinds = function() {
     }
 };
 loadKeybinds();
-var updateKeybindButton = function(keybind) {
-    var text = keybinds[keybind];
+let updateKeybindButton = function(keybind) {
+    let text = keybinds[keybind];
     switch (keybinds[keybind]) {
         case null:
             text = "Not Bound";
@@ -522,12 +518,12 @@ var updateKeybindButton = function(keybind) {
     }
     keybindData[keybind].button.innerText = text;
 };
-var changeKeybind = function(value) {
+let changeKeybind = function(value) {
     if (value == "Escape") {
         value = null;
     }
-    var duplicateKeybind = null;
-    for (var i in keybinds) {
+    let duplicateKeybind = null;
+    for (let i in keybinds) {
         if (i != changingKeybind && typeof keybinds[i] == typeof keybinds[changingKeybind] && keybinds[i] == keybinds[changingKeybind]) {
             if (duplicateKeybind == null) {
                 duplicateKeybind = i;
@@ -539,16 +535,16 @@ var changeKeybind = function(value) {
         }
     }
     if (duplicateKeybind != null) {
-        keybindData[duplicateKeybind].button.style.color = "var(--font-color)";
+        keybindData[duplicateKeybind].button.style.color = "let(--font-color)";
     }
     keybinds[changingKeybind] = value;
-    keybindData[changingKeybind].button.style.color = "var(--font-color)";
+    keybindData[changingKeybind].button.style.color = "let(--font-color)";
     updateKeybindButton(changingKeybind);
     if (value != null) {
-        for (var i in keybinds) {
+        for (let i in keybinds) {
             if (i != changingKeybind && typeof keybinds[i] == typeof keybinds[changingKeybind] && keybinds[i] == keybinds[changingKeybind]) {
-                keybindData[i].button.style.color = "var(--font-color-error)";
-                keybindData[changingKeybind].button.style.color = "var(--font-color-error)";
+                keybindData[i].button.style.color = "let(--font-color-error)";
+                keybindData[changingKeybind].button.style.color = "let(--font-color-error)";
             }
         }
     }
@@ -579,10 +575,10 @@ for (let i in keybindData) {
     button.classList.add("keybindsButton");
     button.addEventListener("click", function() {
         if (changingKeybind != null) {
-            keybindData[changingKeybind].button.style.color = "var(--font-color)";
+            keybindData[changingKeybind].button.style.color = "let(--font-color)";
         }
         changingKeybind = i;
-        button.style.color = "var(--font-color-warn)";
+        button.style.color = "let(--font-color-warn)";
     });
     td2.appendChild(button);
     tr.appendChild(td2);
@@ -593,21 +589,21 @@ for (let i in keybindData) {
     keybindData[i].button = button;
     updateKeybindButton(i);
 }
-var duplicateKeybinds = {};
-for (var i in keybinds) {
+let duplicateKeybinds = {};
+for (let i in keybinds) {
     if (keybinds[i] == null) {
         continue;
     }
-    for (var j in keybinds) {
+    for (let j in keybinds) {
         if (i != j && typeof keybinds[i] == typeof keybinds[j] && keybinds[i] == keybinds[j]) {
-            keybindData[i].button.style.color = "var(--font-color-error)";
-            keybindData[j].button.style.color = "var(--font-color-error)";
+            keybindData[i].button.style.color = "let(--font-color-error)";
+            keybindData[j].button.style.color = "let(--font-color-error)";
         }
     }
 }
 
 const customizeTable = document.getElementById("customizeTable");
-var customizeData = {
+let customizeData = {
     body: { name: "Body:" },
     shirt: { name: "Shirt:" },
     pants: { name: "Pants:" },
@@ -617,7 +613,7 @@ var customizeData = {
     pouch: { name: "Pouch:", types: 1 },
     hair: { name: "Hair:", types: 8 },
 };
-var createCustomizations = function(customizations) {
+let createCustomizations = function(customizations) {
     for (let i in customizeData) {
         const tr = document.createElement("tr");
         const td1 = document.createElement("td");
@@ -631,21 +627,21 @@ var createCustomizations = function(customizations) {
         const colorSelect = document.createElement("input");
         colorSelect.classList.add("colorSelect");
         colorSelect.type = "color";
-        var r = customizations[i][0].toString(16);
+        let r = customizations[i][0].toString(16);
         if (r.length == 1) {
             r = "0" + r;
         }
-        var g = customizations[i][1].toString(16);
+        let g = customizations[i][1].toString(16);
         if (g.length == 1) {
             g = "0" + g;
         }
-        var b = customizations[i][2].toString(16);
+        let b = customizations[i][2].toString(16);
         if (b.length == 1) {
             b = "0" + b;
         }
         colorSelect.value = "#" + r + g + b;
         colorSelect.addEventListener("input", function() {
-            var color = [parseInt(colorSelect.value.substring(1, 3), 16), parseInt(colorSelect.value.substring(3, 5), 16), parseInt(colorSelect.value.substring(5, 7), 16)];
+            let color = [parseInt(colorSelect.value.substring(1, 3), 16), parseInt(colorSelect.value.substring(3, 5), 16), parseInt(colorSelect.value.substring(5, 7), 16)];
             socket.emit("customize", {
                 id: i,
                 type: CUSTOMIZE_COLOR,
@@ -729,5 +725,3 @@ var createCustomizations = function(customizations) {
         customizeTable.appendChild(tr);
     }
 };
-
-var interpolationSteps = 3;

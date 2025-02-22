@@ -1,5 +1,5 @@
-var Entity = function(param) {
-    var self = {
+let Entity = function(param) {
+    let self = {
         id: param.id,
         x: param.x,
         y: param.y,
@@ -36,8 +36,8 @@ Entity.update = function(entity) {
     }
 };
 
-var Rig = function(param) {
-    var self = Entity(param);
+let Rig = function(param) {
+    let self = Entity(param);
     self.type = param.type;
     self.rigId = param.rigId;
 
@@ -54,7 +54,11 @@ var Rig = function(param) {
     }
     else {
         self.name = Rig.data[self.type][self.rigId].name;
+        self.customizations = Rig.data[self.type][self.rigId].customizations;
     }
+
+    self.heldItem = ITEM_NULL;
+    self.heldItemAngle = 0; // TODO p1: WHY IS THE NAME SO BAD BUH
 
     Rig.renderName(self);
 
@@ -78,16 +82,19 @@ var Rig = function(param) {
         self.imageScale = Rig.data[self.type][self.rigId].imageScale;
         self.animationDirections = Rig.data[self.type][self.rigId].animationDirections;
     }
+
+    self.movePath = [];
+
     return self;
 };
 Rig.data = [];
 Rig.renderName = function(rig) {
     offscreenCtx.font = "12px Miniset";
-    var metrics = offscreenCtx.measureText(rig.name);
+    let metrics = offscreenCtx.measureText(rig.name);
     rig.nameWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
     rig.nameHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     rig.nameRender = createOffscreenCanvas(Math.floor(rig.nameWidth * renderScale), Math.floor(rig.nameHeight * renderScale));
-    var nameCtx = rig.nameRender.getContext("2d");
+    let nameCtx = rig.nameRender.getContext("2d");
     nameCtx.font = Math.floor(12 * renderScale) + "px Miniset";
     nameCtx.textBaseline = metrics.actualBoundingBoxDescent > 0 ? "bottom" : "alphabetic";
     nameCtx.fillStyle = "#ff9900";
@@ -103,7 +110,7 @@ Rig.renderName = function(rig) {
 };
 Rig.renderCustomizations = function(rig) {
     rig.render = createOffscreenCanvas(8 * 6, 16 * 8);
-    var bufferCtx = rig.render.getContext("2d");
+    let bufferCtx = rig.render.getContext("2d");
     resetCanvas(bufferCtx);
     bufferCtx.drawImage(drawColoredPlayer(0, rig.customizations.body), 0, 0);
     bufferCtx.drawImage(drawColoredPlayer(1, rig.customizations.shirt), 0, 0);
@@ -124,8 +131,8 @@ Rig.renderCustomizations = function(rig) {
 }
 Rig.drawBelow = function(rig) {
     // only draw if on screen
-    var x = Math.round(rig.x) + cameraX;
-    var y = Math.round(rig.y) + cameraY;
+    let x = Math.round(rig.x) + cameraX;
+    let y = Math.round(rig.y) + cameraY;
     if (rig.render != null) {
         if (x - 4 * 4 >= offscreenCanvas.width / renderScale || x + 4 * 4 <= 0 || y - 12 * 4 >= offscreenCanvas.height / renderScale || y + 4 * 4 <= 0) {
             return;
@@ -133,10 +140,16 @@ Rig.drawBelow = function(rig) {
         offscreenCtx.drawImage(rig.render, rig.animationStage * 8, rig.animationDirection * 16 + rig.animationPhase * 8 * 16, 8, 16, x - 4 * 4, y - 12 * 4, 8 * 4, 16 * 4);
     }
     else {
-        if (x + rig.imageOffsetX - rig.imageWidth * rig.imageScale / 2 >= offscreenCanvas.width / renderScale || x + rig.imageOffsetX + rig.imageWidth * rig.imageScale / 2 <= 0 || y + rig.imageOffsetY - rig.imageHeight * rig.imageScale / 2 >= offscreenCanvas.height / renderScale || y + rig.imageOffsetY + rig.imageHeight * rig.imageScale / 2 <= 0) {
+        if (x + (rig.imageOffsetX - rig.imageWidth / 2) * rig.imageScale >= offscreenCanvas.width / renderScale || x + (rig.imageOffsetX + rig.imageWidth / 2) * rig.imageScale <= 0 || y + (rig.imageOffsetY - rig.imageHeight / 2) * rig.imageScale >= offscreenCanvas.height / renderScale || y + (rig.imageOffsetY + rig.imageHeight / 2) * rig.imageScale <= 0) {
             return;
         }
-        offscreenCtx.drawImage(Entity.images[rig.image], rig.animationStage * rig.imageWidth, rig.animationDirection * rig.imageHeight + rig.animationPhase * rig.animationDirections * rig.imageHeight, rig.imageWidth, rig.imageHeight, x + rig.imageOffsetX - rig.imageWidth * rig.imageScale / 2, y + rig.imageOffsetY - rig.imageHeight * rig.imageScale / 2, rig.imageWidth * rig.imageScale, rig.imageHeight * rig.imageScale);
+        offscreenCtx.drawImage(Entity.images[rig.image], rig.animationStage * rig.imageWidth, rig.animationDirection * rig.imageHeight + rig.animationPhase * rig.animationDirections * rig.imageHeight, rig.imageWidth, rig.imageHeight, x + (rig.imageOffsetX - rig.imageWidth / 2) * rig.imageScale, y + (rig.imageOffsetY - rig.imageHeight / 2) * rig.imageScale, rig.imageWidth * rig.imageScale, rig.imageHeight * rig.imageScale);
+    }
+    if (rig.heldItem != ITEM_NULL) {
+        offscreenCtx.translate(rig.x + cameraX, rig.y + cameraY);
+        offscreenCtx.rotate((rig.heldItemAngle - Inventory.data.items[rig.heldItem].heldItemAngle ?? 0) / 180 * Math.PI);
+        offscreenCtx.drawImage(Entity.images[Inventory.data.items[rig.heldItem].image], (Inventory.data.items[rig.heldItem].heldItemX ?? 0 - 8) * 4, (Inventory.data.items[rig.heldItem].heldItemY ?? 0 - 8) * 4, 16 * 4, 16 * 4);
+        offscreenCtx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
     }
 };
 Rig.drawAbove = function(rig) {
@@ -151,11 +164,11 @@ Rig.drawAbove = function(rig) {
     //         return;
     //     }
     // }
-    var x = Math.round(rig.x) + cameraX;
+    let x = Math.round(rig.x) + cameraX;
     if (x - Math.max(8 * 4, rig.nameWidth / 2) >= offscreenCanvas.width / renderScale || x + Math.max(8 * 4, rig.nameWidth / 2) <= 0) {
         return;
     }
-    var y = Math.round(rig.y) + cameraY - 4;
+    let y = Math.round(rig.y) + cameraY - 4;
     if (rig.type != NPC) {
         y -= 5 * 4;
     }
@@ -204,11 +217,19 @@ Rig.drawDebug = function(rig) {
         return;
     }
     offscreenCtx.strokeRect(rig.x - rig.width / 2 + cameraX, rig.y - rig.height / 2 + cameraY, rig.width, rig.height);
+    if (rig.movePath.length > 0) {
+        offscreenCtx.beginPath();
+        offscreenCtx.moveTo(rig.x + cameraX, rig.y + cameraY);
+        for (let i = 0; i < rig.movePath.length; i++) {
+            offscreenCtx.lineTo(rig.movePath[i][0] * TILE_SIZE + TILE_SIZE / 2 + cameraX, rig.movePath[i][1] * TILE_SIZE + TILE_SIZE / 2 + cameraY);
+        }
+        offscreenCtx.stroke();
+    }
 };
 
-var drawColoredPlayer = function(layer, color) {
-    var buffer = createOffscreenCanvas(8 * 6, 16 * 8);
-    var bufferCtx = buffer.getContext("2d");
+let drawColoredPlayer = function(layer, color) {
+    let buffer = createOffscreenCanvas(8 * 6, 16 * 8);
+    let bufferCtx = buffer.getContext("2d");
     resetCanvas(bufferCtx);
     bufferCtx.drawImage(Entity.images.player, 0, layer * 16 * 8, 8 * 6, 16 * 8, 0, 0, 8 * 6, 16 * 8);
     bufferCtx.fillStyle = "rgba(" + color[0] + ", " + color[1] + ", " + color[2] + ", " + color[3] + ")";
@@ -219,8 +240,8 @@ var drawColoredPlayer = function(layer, color) {
     return buffer;
 };
 
-var Projectile = function(param) {
-    var self = new Entity(param);
+let Projectile = function(param) {
+    let self = new Entity(param);
     self.projectileId = param.projectileId;
     self.type = PROJECTILE;
 
@@ -234,6 +255,8 @@ var Projectile = function(param) {
     self.animationStage = param.animationStage;
     self.animationPhase = param.animationPhase;
 
+    self.parent = param.parent;
+
     self.image = Projectile.data[self.projectileId].image;
     self.imageWidth = Projectile.data[self.projectileId].imageWidth;
     self.imageHeight = Projectile.data[self.projectileId].imageHeight;
@@ -245,22 +268,34 @@ var Projectile = function(param) {
 };
 Projectile.data = null;
 Projectile.draw = function(projectile) {
-    if (projectile.x - projectile.diagonal / 2 + cameraX >= offscreenCanvas.width / renderScale || projectile.x + projectile.diagonal / 2 + cameraX <= 0 || projectile.y - projectile.diagonal / 2 + cameraY >= offscreenCanvas.height / renderScale || projectile.y + projectile.diagonal / 2 + cameraY <= 0) {
+    let x = projectile.x;
+    let y = projectile.y;
+    if (projectile.parent == selfPlayer.id) {
+        x += selfPlayer.x;
+        y += selfPlayer.y;
+    }
+    if (x - projectile.diagonal / 2 + cameraX >= offscreenCanvas.width / renderScale || x + projectile.diagonal / 2 + cameraX <= 0 || y - projectile.diagonal / 2 + cameraY >= offscreenCanvas.height / renderScale || y + projectile.diagonal / 2 + cameraY <= 0) {
         return;
     }
-    offscreenCtx.translate(projectile.x + cameraX, projectile.y + cameraY);
-    // offscreenCtx.setTransform(renderScale, 0, 0, renderScale, projectile.x * renderScale, projectile.y * renderScale);
+    offscreenCtx.translate(x + cameraX, y + cameraY);
+    // offscreenCtx.setTransform(renderScale, 0, 0, renderScale, x * renderScale, y * renderScale);
     offscreenCtx.rotate(projectile.angle / 180 * Math.PI);
     offscreenCtx.drawImage(Entity.images[projectile.image], projectile.animationStage * projectile.imageWidth, projectile.animationPhase * projectile.imageHeight, projectile.imageWidth, projectile.imageHeight, projectile.imageOffsetX - projectile.width / 2, projectile.imageOffsetY - projectile.height / 2, projectile.imageWidth * projectile.imageScale, projectile.imageHeight * projectile.imageScale);
     offscreenCtx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
     // offscreenCtx.rotate(-projectile.angle / 180 * Math.PI);
-    // offscreenCtx.translate(-cameraX - projectile.x, -cameraY - projectile.y);
+    // offscreenCtx.translate(-cameraX - x, -cameraY - y);
 };
 Projectile.drawDebug = function(projectile) {
-    if (projectile.x - projectile.diagonal / 2 + cameraX >= offscreenCanvas.width / renderScale || projectile.x + projectile.diagonal / 2 + cameraX <= 0 || projectile.y - projectile.diagonal / 2 + cameraY >= offscreenCanvas.height / renderScale || projectile.y + projectile.diagonal / 2 + cameraY <= 0) {
+    let x = projectile.x;
+    let y = projectile.y;
+    if (projectile.parent == selfPlayer.id) {
+        x += selfPlayer.x;
+        y += selfPlayer.y;
+    }
+    if (x - projectile.diagonal / 2 + cameraX >= offscreenCanvas.width / renderScale || x + projectile.diagonal / 2 + cameraX <= 0 || y - projectile.diagonal / 2 + cameraY >= offscreenCanvas.height / renderScale || y + projectile.diagonal / 2 + cameraY <= 0) {
         return;
     }
-    offscreenCtx.translate(projectile.x + cameraX, projectile.y + cameraY);
+    offscreenCtx.translate(x + cameraX, y + cameraY);
     offscreenCtx.rotate(projectile.angle / 180 * Math.PI);
     offscreenCtx.strokeRect(-projectile.width / 2, -projectile.height / 2, projectile.width, projectile.height);
     offscreenCtx.setTransform(renderScale, 0, 0, renderScale, 0, 0);
@@ -271,8 +306,8 @@ Projectile.update = function(projectile) {
     }
 };
 
-var DroppedItem = function(param) {
-    var self = {
+let DroppedItem = function(param) {
+    let self = {
         id: param.id,
         x: param.x,
         y: param.y,
@@ -294,11 +329,11 @@ var DroppedItem = function(param) {
 DroppedItem.list = {};
 DroppedItem.renderStackSize = function(droppedItem) {
     offscreenCtx.font = "16px Miniset";
-    var metrics = offscreenCtx.measureText(droppedItem.item.stackSize);
+    let metrics = offscreenCtx.measureText(droppedItem.item.stackSize);
     droppedItem.nameWidth = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
     droppedItem.nameHeight = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
     droppedItem.nameRender = createOffscreenCanvas(Math.floor(droppedItem.nameWidth * renderScale), Math.floor(droppedItem.nameHeight * renderScale));
-    var nameCtx = droppedItem.nameRender.getContext("2d");
+    let nameCtx = droppedItem.nameRender.getContext("2d");
     nameCtx.font = Math.floor(16 * renderScale) + "px Miniset";
     nameCtx.textBaseline = metrics.actualBoundingBoxDescent > 0 ? "bottom" : "alphabetic";
     nameCtx.fillStyle = "#ffffff";
@@ -315,8 +350,8 @@ DroppedItem.drawDebug = function(droppedItem) {
     // TODO
 };
 
-var Light = function(x, y, map, size, alpha, colored, r, g, b) {
-    var self = {
+let Light = function(x, y, map, size, alpha, colored, r, g, b) {
+    let self = {
         id: Math.random(),
         x: x,
         y: y,
@@ -340,24 +375,24 @@ var Light = function(x, y, map, size, alpha, colored, r, g, b) {
 };
 Light.list = [];
 Light.drawAlpha = function(light) {
-    var x = light.x + cameraX;
-    var y = light.y + cameraY;
+    let x = light.x + cameraX;
+    let y = light.y + cameraY;
     if (x - light.size / 2 - 16 >= offscreenCanvas.width / renderScale || x + light.size / 2 + 16 <= 0 || y - light.size / 2 - 16 >= offscreenCanvas.height / renderScale || y + light.size / 2 + 16 <= 0) {
         return;
     }
-    var radialGradient = offscreenLightCtx.createRadialGradient(x, y, 0, x, y, light.flickerSize / 2);
+    let radialGradient = offscreenLightCtx.createRadialGradient(x, y, 0, x, y, light.flickerSize / 2);
     radialGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
     radialGradient.addColorStop(0, "rgba(0, 0, 0, " + light.flickerAlpha + ")");
     offscreenLightCtx.fillStyle = radialGradient;
     offscreenLightCtx.fillRect(x - light.flickerSize / 2, y - light.flickerSize / 2, light.flickerSize, light.flickerSize);
 };
 Light.drawColor = function(light) {
-    var x = light.x + cameraX;
-    var y = light.y + cameraY;
+    let x = light.x + cameraX;
+    let y = light.y + cameraY;
     if (x - light.size / 2 - 16 >= offscreenCanvas.width / renderScale || x + light.size / 2 + 16 <= 0 || y - light.size / 2 - 16 >= offscreenCanvas.height / renderScale || y + light.size / 2 + 16 <= 0) {
         return;
     }
-    var radialGradient = offscreenLightCtx.createRadialGradient(x, y, 0, x, y, light.flickerSize / 2);
+    let radialGradient = offscreenLightCtx.createRadialGradient(x, y, 0, x, y, light.flickerSize / 2);
     radialGradient.addColorStop(1, "rgba(" + light.r + ", " + light.g + ", " + light.b + ", 0)");
     radialGradient.addColorStop(0, "rgba(" + light.r + ", " + light.g + ", " + light.b + ", " + light.flickerAlpha + ")");
     offscreenLightCtx.fillStyle = radialGradient;
@@ -375,20 +410,20 @@ Light.update = function(light) {
 };
 const entityAlphaSize = 512;
 Light.drawEntityAlpha = function(entity) {
-    var x = entity.x + cameraX;
-    var y = entity.y + cameraY;
+    let x = entity.x + cameraX;
+    let y = entity.y + cameraY;
     if (x - entityAlphaSize / 2 >= offscreenCanvas.width / renderScale || x + entityAlphaSize / 2 <= 0 || y - entityAlphaSize / 2 >= offscreenCanvas.height / renderScale || y + entityAlphaSize / 2 <= 0) {
         return;
     }
-    var radialGradient = offscreenLightCtx.createRadialGradient(x, y, 0, x, y, entityAlphaSize / 2);
+    let radialGradient = offscreenLightCtx.createRadialGradient(x, y, 0, x, y, entityAlphaSize / 2);
     radialGradient.addColorStop(1, "rgba(0, 0, 0, 0)");
     radialGradient.addColorStop(0, "rgba(0, 0, 0, 1)");
     offscreenLightCtx.fillStyle = radialGradient;
     offscreenLightCtx.fillRect(x - entityAlphaSize / 2, y - entityAlphaSize / 2, entityAlphaSize, entityAlphaSize);
 };
 
-var AnimatedTile = function(x, y, layer, tile) {
-    var self = {
+let AnimatedTile = function(x, y, layer, tile) {
+    let self = {
         id: Math.random(),
         x: x * TILE_SIZE,
         y: y * TILE_SIZE,
@@ -419,8 +454,8 @@ AnimatedTile.update = function(animatedTile) {
     offscreenCtx.drawImage(tileset[animatedTile.tile].animation.image, animatedTile.index * 16, 0, 16, 16, animatedTile.x + cameraX, animatedTile.y + cameraY, TILE_SIZE, TILE_SIZE);
 };
 
-var Particle = function(x, y, layer, type, value) {
-    var self = {
+let Particle = function(x, y, layer, type, value) {
+    let self = {
         id: Math.random(),
         x: x,
         y: y,
@@ -466,11 +501,11 @@ var Particle = function(x, y, layer, type, value) {
             break;
         }
         case PARTICLE_TELEPORT: {
-            var angle = Math.random() * 2 * Math.PI;
-            var magnitude = Math.random() * 3;
+            let angle = Math.random() * 2 * Math.PI;
+            let magnitude = Math.random() * 3;
             self.speedX = Math.cos(angle) * magnitude;
             self.speedY = Math.sin(angle) * magnitude;
-            var size = Math.random() * 10 + 10;
+            let size = Math.random() * 10 + 10;
             self.width = size;
             self.height = size;
             self.decayX = 0.05;
@@ -480,11 +515,11 @@ var Particle = function(x, y, layer, type, value) {
             break;
         }
         case PARTICLE_EXPLOSION: {
-            var angle = Math.random() * 2 * Math.PI;
-            var magnitude = Math.random() * self.value / 10;
+            let angle = Math.random() * 2 * Math.PI;
+            let magnitude = Math.random() * self.value / 10;
             self.speedX = Math.cos(angle) * magnitude;
             self.speedY = Math.sin(angle) * magnitude;
-            var size = Math.random() * 10 + 20;
+            let size = Math.random() * 10 + 20;
             self.width = size;
             self.height = size;
             self.decayX = 0.15;
@@ -500,7 +535,7 @@ var Particle = function(x, y, layer, type, value) {
         case PARTICLE_FIRE: {
             self.speedX = Math.random() * 8 - 4;
             self.speedY = -Math.random() - 1;
-            var size = Math.random() * 10 + 20;
+            let size = Math.random() * 10 + 20;
             self.width = size;
             self.height = size;
             self.decayX = 0.15;
@@ -525,11 +560,11 @@ Particle.renderText = function(particle) {
     switch (particle.type) {
         case PARTICLE_DAMAGE: {
             offscreenCtx.font = "24px Miniset";
-            var metrics = offscreenCtx.measureText("-" + particle.value);
+            let metrics = offscreenCtx.measureText("-" + particle.value);
             particle.width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
             particle.height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
             particle.render = createOffscreenCanvas(Math.floor(particle.width * renderScale), Math.floor(particle.height * renderScale));
-            var renderCtx = particle.render.getContext("2d");
+            let renderCtx = particle.render.getContext("2d");
             renderCtx.font = Math.floor(12 * renderScale) * 2 + "px Miniset";
             renderCtx.textBaseline = metrics.actualBoundingBoxDescent > 0 ? "bottom" : "alphabetic";
             renderCtx.fillStyle = "#ff0000";
@@ -538,11 +573,11 @@ Particle.renderText = function(particle) {
         }
         case PARTICLE_CRIT_DAMAGE: {
             offscreenCtx.font = "bold 36px Miniset";
-            var metrics = offscreenCtx.measureText("-" + particle.value);
+            let metrics = offscreenCtx.measureText("-" + particle.value);
             particle.width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
             particle.height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
             particle.render = createOffscreenCanvas(Math.floor(particle.width * renderScale), Math.floor(particle.height * renderScale));
-            var renderCtx = particle.render.getContext("2d");
+            let renderCtx = particle.render.getContext("2d");
             renderCtx.font = "bold " + Math.floor(12 * renderScale) * 3 + "px Miniset";
             renderCtx.textBaseline = metrics.actualBoundingBoxDescent > 0 ? "bottom" : "alphabetic";
             renderCtx.fillStyle = "#ffff00";
@@ -551,11 +586,11 @@ Particle.renderText = function(particle) {
         }
         case PARTICLE_HEAL: {
             offscreenCtx.font = "24px Miniset";
-            var metrics = offscreenCtx.measureText("+" + particle.value);
+            let metrics = offscreenCtx.measureText("+" + particle.value);
             particle.width = metrics.actualBoundingBoxLeft + metrics.actualBoundingBoxRight;
             particle.height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
             particle.render = createOffscreenCanvas(Math.floor(particle.width * renderScale), Math.floor(particle.height * renderScale));
-            var renderCtx = particle.render.getContext("2d");
+            let renderCtx = particle.render.getContext("2d");
             renderCtx.font = Math.floor(12 * renderScale) * 2 + "px Miniset";
             renderCtx.textBaseline = metrics.actualBoundingBoxDescent > 0 ? "bottom" : "alphabetic";
             renderCtx.fillStyle = "#00ff00";
@@ -565,13 +600,13 @@ Particle.renderText = function(particle) {
     }
 };
 Particle.spread = function(particle, magnitude) {
-    var angle = Math.random() * 2 * Math.PI;
+    let angle = Math.random() * 2 * Math.PI;
     particle.x += Math.cos(angle) * magnitude;
     particle.y += Math.sin(angle) * magnitude;
 };
 Particle.draw = function(particle) {
-    var x = Math.round(particle.x) + cameraX;
-    var y = Math.round(particle.y) + cameraY;
+    let x = Math.round(particle.x) + cameraX;
+    let y = Math.round(particle.y) + cameraY;
     if (x - particle.width / 2 >= offscreenCanvas.width / renderScale || x + particle.width / 2 <= 0 || y - particle.height / 2 >= offscreenCanvas.height / renderScale || y + particle.height / 2 <= 0) {
         return;
     }
@@ -640,8 +675,8 @@ Particle.update = function(particle) {
     }
 };
 
-var ParticleGenerator = function(x, y, layer, map, type, value, speed, spread) {
-    var self = {
+let ParticleGenerator = function(x, y, layer, map, type, value, speed, spread) {
+    let self = {
         id: Math.random(),
         x: x,
         y: y,

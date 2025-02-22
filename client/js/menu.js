@@ -1,5 +1,5 @@
-var signInState = AWAITING_PUBLIC_KEY;
-var publicKey = null;
+let signInState = AWAITING_PUBLIC_KEY;
+let publicKey = null;
 // -2: loaded
 // -1: awaiting public key
 // 0: nothing
@@ -22,7 +22,7 @@ const cancelSignIn = document.getElementById("cancelSignIn");
 const signInSuccess = document.getElementById("signInSuccess");
 const signInError = document.getElementById("signInError");
 
-var awaitSignInState = function() {
+let awaitSignInState = function() {
     signInState = AWAITING_RESPONSE;
     username.disabled = true;
     password.disabled = true;
@@ -33,7 +33,7 @@ var awaitSignInState = function() {
     signInSuccess.innerText = "";
     signInError.innerText = "";
 };
-var resetSignInState = function() {
+let resetSignInState = function() {
     signInState = NONE;
     username.disabled = false;
     password.disabled = false;
@@ -139,7 +139,7 @@ document.getElementById("changePassword").addEventListener("click", async functi
 });
 
 socket.on("signIn", async function(data) {
-    var sanitizedUsername = username.value.replaceAll("<", "&lt").replaceAll(">", "&gt");
+    let sanitizedUsername = username.value.replaceAll("<", "&lt").replaceAll(">", "&gt");
     switch (data.state) {
         case SIGN_IN_SUCCESS:
             // loading
@@ -147,27 +147,27 @@ socket.on("signIn", async function(data) {
             document.getElementById("loadingContainer").offsetHeight;
             document.getElementById("loadingContainer").style.opacity = 1;
             await sleep(500);
-            var loadingBarText = document.getElementById("loadingBarText");
-            var loadingBarInner = document.getElementById("loadingBarInner");
+            let loadingBarText = document.getElementById("loadingBarText");
+            let loadingBarInner = document.getElementById("loadingBarInner");
             document.getElementById("loadingBar").style.display = "block";
             insertChat("Meadow Guarder " + data.version, "color: #00ff00; font-weight: bold;");
             // insertChat(sanitizedUsername + " joined the game.", "login");
-            var updateLoadingBar = function() {
-                var percent = Math.floor(loadedAssets / data.totalAssets * 100) + "%";
+            let updateLoadingBar = function() {
+                let percent = Math.floor(loadedAssets / data.totalAssets * 100) + "%";
                 loadingBarText.innerText = loadedAssets + "/" + data.totalAssets + " (" + percent + ")";
                 loadingBarInner.style.width = percent;
                 if (loadedAssets >= data.totalAssets) {
                     clearInterval(updateLoadingBar);
                     document.getElementById("loadingIcon").style.opacity = 0;
-                    for (var i = 0; i < Inventory.data.crafts.length; i++) {
-                        for (var j = 0; j < Inventory.data.items.length; j++) {
+                    for (let i = 0; i < Inventory.data.crafts.length; i++) {
+                        for (let j = 0; j < Inventory.data.items.length; j++) {
                             if (Inventory.data.crafts[i].id == Inventory.data.items[j].id) {
                                 Inventory.data.crafts[i].id = j;
                                 break;
                             }
                         }
-                        for (var j = 0; j < Inventory.data.crafts[i].materials.length; j++) {
-                            for (var k = 0; k < Inventory.data.items.length; k++) {
+                        for (let j = 0; j < Inventory.data.crafts[i].materials.length; j++) {
+                            for (let k = 0; k < Inventory.data.items.length; k++) {
                                 if (Inventory.data.crafts[i].materials[j].id == Inventory.data.items[k].id) {
                                     Inventory.data.crafts[i].materials[j].id = k;
                                     break;
@@ -215,7 +215,7 @@ socket.on("signIn", async function(data) {
             break;
         case LOADING_SUCCESS:
             selfPlayer = new Rig(data);
-            // var getSelfPlayer = setInterval(function() {
+            // let getSelfPlayer = setInterval(function() {
             //     if (Entity.list[data.id] != null) {
             // clearInterval(getSelfPlayer);
             // selfPlayer = Entity.list[data.id];
@@ -304,10 +304,10 @@ socket.on("signIn", async function(data) {
         case TEMPORARY_BANNED:
             resetSignInState();
             data.time = Math.ceil(data.time / 1000);
-            var seconds = data.time % 60;
-            var minutes = Math.floor(data.time / 60) % 60;
-            var hours = Math.floor(data.time / 3600) % 24;
-            var days = Math.floor(data.time / 86400);
+            let seconds = data.time % 60;
+            let minutes = Math.floor(data.time / 60) % 60;
+            let hours = Math.floor(data.time / 3600) % 24;
+            let days = Math.floor(data.time / 86400);
             if (days != 0) {
                 signInError.innerText = "Error: Account \"" + sanitizedUsername + "\" is banned for " + days + "d " + hours + "h " + minutes + "m " + seconds + "s.";
             }
@@ -328,7 +328,7 @@ socket.on("signIn", async function(data) {
     }
 });
 
-var RSAencode = async function(text) {
+let RSAencode = async function(text) {
     if (publicKey != null) {
         return await window.crypto.subtle.encrypt({ name: "RSA-OAEP" }, publicKey, new TextEncoder().encode(text));
     }
